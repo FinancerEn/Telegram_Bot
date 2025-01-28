@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from aiogram.types import BotCommandScopeAllPrivateChats
 # Подключаем наш кастомный файл взаимодействия с пользователем.
 from handlers.user_private import user_private_router
+from handlers.user_group import user_group_router
 from common.bot_comds_list import private
 
 
@@ -26,6 +27,7 @@ dp = Dispatcher()
 
 # Подключение маршрутов
 dp.include_router(user_private_router)
+dp.include_router(user_group_router)
 
 
 async def main():

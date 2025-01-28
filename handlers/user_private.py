@@ -1,5 +1,5 @@
 from aiogram import F, types, Router
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command, or_f
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
@@ -13,34 +13,31 @@ async def start_cmd(message: types.Message):
     # Ответить с упоминанием автора код: await message.reply(message.text)
 
 
-@user_private_router.message(Command('menu'))
+@user_private_router.message(or_f(Command('menu'), F.text.casefold() == 'меню'))
 async def menu_cmd(message: types.Message):
-    await message.answer('Меню:')
+    await message.answer("Меню:")
 
 
-@user_private_router.message(Command('cost'))
+@user_private_router.message(or_f(Command('cost'), F.text.casefold() == 'стоимость'))
 async def cost_cmd(message: types.Message):
-    await message.answer('Стоимость:')
+    await message.answer("Стоимость:")
 
 
-@user_private_router.message(Command('payment'))
+@user_private_router.message(or_f(Command('payment'), F.text.casefold() == 'варианты оплаты'))
 async def payment_cmd(message: types.Message):
-    await message.answer('Варианты оплаты:')
+    await message.answer("Варианты оплаты:")
 
 
-@user_private_router.message(Command('about'))
+@user_private_router.message(or_f(Command('about'), F.text.casefold() == 'о нас'))
 async def about_cmd(message: types.Message):
     await message.answer('О нас:')
 
 
-@user_private_router.message(F.text == 'Приветы')
-async def abo_cmd(message: types.Message):
-    await message.answer("Это магист фильтр")
+@user_private_router.message(or_f(Command('shipping'), F.text.casefold().contains('доставк')))
+async def new_menu_cmd(message: types.Message):
+    await message.answer("Варианты доставки")
 
 
-@user_private_router.message(F.text.contains('Варианты доставки'))
-async def ab_cmd(message: types.Message):
-    await message.answer("Это магист фильтр 2")
 
 
 # Генерируем ответ на определённые ключевые слова

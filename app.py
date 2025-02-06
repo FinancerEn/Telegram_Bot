@@ -35,7 +35,8 @@ async def main():
     # Настройка команд, которые видно при нажатии на "/" в чате с ботом.
     # private — это список команд, который в
     # bot.set_my_commands: Устанавливает список доступных команд для бота.
-    # scope=BotCommandScopeAllPrivateChats: Область действия команд. В данном случае команды будут видны только в приватных чатах с ботом (не в группах или каналах).
+    # scope=BotCommandScopeAllPrivateChats: Область действия команд.
+    # В данном случае команды будут видны только в приватных чатах с ботом (не в группах или каналах).
     try:
         await bot.set_my_commands(commands=private, scope=BotCommandScopeAllPrivateChats())
     except Exception as e:

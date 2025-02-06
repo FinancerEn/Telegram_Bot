@@ -1,43 +1,54 @@
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart, Command, or_f
+from aiogram.types import FSInputFile
+from filters.chat_types import ChatTypeFilter
+from text_message.text import selling_text, selling_text_2
+
+
+from kbds import reply
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
 user_private_router = Router()
+# Наш кастомный фильтр. Если стоит private это значит функционал этого файла
+# используется только в чатах. Если gropup то в группах или оба сразу.
+user_private_router.message.filter(ChatTypeFilter(['private']))
 
 
 # dp.message - декоратор обработки событий приходящих к боту.
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
-    await message.answer('Привет! Я — ваш Чат-бот Разработчик. Чем могу помочь?')
+    # reply_markup - обращаюсь к клавиатуре из файла reply.py, папки lbds.
     # Ответить с упоминанием автора код: await message.reply(message.text)
+    await message.answer('Привет! Я — ваш Чат-бот Разработчик. Чем могу помочь?', reply_markup=reply.submenu_kd)
 
 
+#                          Хэндлеры:
 @user_private_router.message(or_f(Command('menu'), F.text.casefold() == 'меню'))
 async def menu_cmd(message: types.Message):
-    await message.answer("Меню:")
+    await message.answer("Что Вас интересует?🧐", reply_markup=reply.submenu_kd)
 
 
-@user_private_router.message(or_f(Command('cost'), F.text.casefold() == 'стоимость'))
-async def cost_cmd(message: types.Message):
-    await message.answer("Стоимость:")
+@user_private_router.message(F.text.casefold() == 'отзывы')
+async def reviews(message: types.Message):
+    photo = FSInputFile("images/review1.jpg")
+    await message.answer_photo(photo, caption="Отзывы наших клиентов 😊", reply_markup=reply.submenu_kd)
 
 
-@user_private_router.message(or_f(Command('payment'), F.text.casefold() == 'варианты оплаты'))
+@user_private_router.message(or_f(Command('Кейсы'), F.text.casefold() == 'варианты оплаты'))
 async def payment_cmd(message: types.Message):
-    await message.answer("Варианты оплаты:")
+    await message.answer("Кейсы: Тут должны быть кейсы", reply_markup=reply.submenu_kd)
 
 
-@user_private_router.message(or_f(Command('about'), F.text.casefold() == 'о нас'))
+@user_private_router.message(F.text.casefold() == 'заказать разработку бота')
 async def about_cmd(message: types.Message):
-    await message.answer('О нас:')
+    await message.answer(selling_text)
+    await message.answer(selling_text_2, reply_markup=reply.submenu_kd)
 
 
 @user_private_router.message(or_f(Command('shipping'), F.text.casefold().contains('доставк')))
 async def new_menu_cmd(message: types.Message):
-    await message.answer("Варианты доставки")
-
-
+    await message.answer("Варианты доставки", reply_markup=reply.submenu_kd)
 
 
 # Генерируем ответ на определённые ключевые слова

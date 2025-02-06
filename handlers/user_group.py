@@ -1,11 +1,15 @@
 # Удаляем сообщения если они содержат ругательные слова:
 from string import punctuation
 from aiogram import types, Router
+# Список запрещённых слов
+from swearing.exception import restricted_words
+from filters.chat_types import ChatTypeFilter
+
 
 user_group_router = Router()
-
-# Список запрещённых слов
-restricted_words = {'говно', 'пидр', 'блядь', 'сука', 'пиздабол'}
+# Наш кастомный фильтр. Если стоит private это значит функционал этого файла
+# используется только в чатах. Если gropup то в группах или оба сразу.
+user_group_router.message.filter(ChatTypeFilter(['group', 'supergroup']))
 
 
 # Функция для очистки текста от пунктуации

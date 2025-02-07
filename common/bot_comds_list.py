@@ -4,7 +4,7 @@ from aiogram.types import BotCommand
 private = [
     BotCommand(command='menu', description='Посмотреть меню'),
     BotCommand(command='about', description='О нас'),
-    BotCommand(command='payment', description='Варианты оплаты'),
+    BotCommand(command='kuysy', description='Кейсы'),
+    BotCommand(command='order', description='заказать разработку бота'),
     BotCommand(command='cost', description='Стоимость'),
-    BotCommand(command='shipping', description='Варианты доставки'),
 ]

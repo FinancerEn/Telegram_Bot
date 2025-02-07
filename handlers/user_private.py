@@ -1,9 +1,11 @@
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart, Command, or_f
 from aiogram.types import FSInputFile
-from filters.chat_types import ChatTypeFilter
-from text_message.text import selling_text, selling_text_2
+from text_message import text
+# Импорт Bold для того что бы сделать шрифт жирным
+from aiogram.utils.formatting import Bold
 
+from filters.chat_types import ChatTypeFilter
 
 from kbds import reply
 
@@ -12,43 +14,54 @@ from kbds import reply
 user_private_router = Router()
 # Наш кастомный фильтр. Если стоит private это значит функционал этого файла
 # используется только в чатах. Если gropup то в группах или оба сразу.
-user_private_router.message.filter(ChatTypeFilter(['private']))
+user_private_router.message.filter(ChatTypeFilter(["private"]))
 
 
 # dp.message - декоратор обработки событий приходящих к боту.
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
-    # reply_markup - обращаюсь к клавиатуре из файла reply.py, папки lbds.
+    # reply_markup - обращаюсь к клавиатуре из файла reply.py, папки kbds.
     # Ответить с упоминанием автора код: await message.reply(message.text)
-    await message.answer('Привет! Я — ваш Чат-бот Разработчик. Чем могу помочь?', reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text_4, reply_markup=reply.submenu_kd)
 
 
 #                          Хэндлеры:
-@user_private_router.message(or_f(Command('menu'), F.text.casefold() == 'меню'))
+@user_private_router.message(or_f(Command("menu"), F.text.casefold() == "меню"))
 async def menu_cmd(message: types.Message):
-    await message.answer("Что Вас интересует?🧐", reply_markup=reply.submenu_kd)
+    photo = FSInputFile("images/start_image_2.jpg")
+    await message.answer_photo(
+        photo, "Что Вас интересует?🧐", reply_markup=reply.submenu_kd
+    )
 
 
-@user_private_router.message(F.text.casefold() == 'отзывы')
+@user_private_router.message(F.text.casefold() == "отзывы")
 async def reviews(message: types.Message):
-    photo = FSInputFile("images/review1.jpg")
-    await message.answer_photo(photo, caption="Отзывы наших клиентов 😊", reply_markup=reply.submenu_kd)
+
+    texts = Bold("Отзывы наших клиентов 😊")  # Делаем текст жирным
+    await message.answer(texts.as_html(), parse_mode="HTML", reply_markup=reply.submenu_kd)
+
+    photo = FSInputFile("images/review1.webp")
+    photo_2 = FSInputFile("images/review1.webp")
+    await message.answer_photo(photo)
+    await message.answer_photo(photo_2)
 
 
-@user_private_router.message(or_f(Command('Кейсы'), F.text.casefold() == 'варианты оплаты'))
+@user_private_router.message(
+    or_f(Command("Кейсы"), F.text.casefold() == "варианты оплаты")
+)
 async def payment_cmd(message: types.Message):
     await message.answer("Кейсы: Тут должны быть кейсы", reply_markup=reply.submenu_kd)
 
 
-@user_private_router.message(F.text.casefold() == 'заказать разработку бота')
+@user_private_router.message(F.text.casefold() == "заказать разработку бота")
 async def about_cmd(message: types.Message):
-    await message.answer(selling_text)
-    await message.answer(selling_text_2, reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text)
+    await message.answer(text.selling_text_2, reply_markup=reply.submenu_kd)
 
 
-@user_private_router.message(or_f(Command('shipping'), F.text.casefold().contains('доставк')))
+@user_private_router.message(F.text.casefold() == "стоимость услуг")
 async def new_menu_cmd(message: types.Message):
-    await message.answer("Варианты доставки", reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text_3, reply_markup=reply.submenu_kd)
 
 
 # Генерируем ответ на определённые ключевые слова

@@ -7,7 +7,7 @@ from aiogram.utils.formatting import Bold
 
 from filters.chat_types import ChatTypeFilter
 
-from kbds import reply
+from kbds import reply, inline
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
@@ -28,7 +28,7 @@ async def start_cmd(message: types.Message):
 #                          Хэндлеры:
 @user_private_router.message(or_f(Command("menu"), F.text.casefold() == "меню"))
 async def menu_cmd(message: types.Message):
-    photo = FSInputFile("images/start_image_2.jpg")
+    photo = FSInputFile("images/start_image_2.webp")
     await message.answer_photo(
         photo, "Что Вас интересует?🧐", reply_markup=reply.submenu_kd
     )
@@ -55,8 +55,7 @@ async def payment_cmd(message: types.Message):
 
 @user_private_router.message(F.text.casefold() == "заказать разработку бота")
 async def about_cmd(message: types.Message):
-    await message.answer(text.selling_text)
-    await message.answer(text.selling_text_2, reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text, reply_markup=inline.platform_kb)
 
 
 @user_private_router.message(F.text.casefold() == "стоимость услуг")

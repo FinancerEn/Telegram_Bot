@@ -8,7 +8,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
-submenu_kd = ReplyKeyboardMarkup(
+submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="меню"),
@@ -22,6 +22,35 @@ submenu_kd = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True,
     input_field_placeholder='Что Вас интересует?',
+)
+
+
+reply_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="Telegram"),
+            KeyboardButton(text="Instagram"),
+        ],
+        [
+            KeyboardButton(text="vk"),
+            KeyboardButton(text="Whatsapp"),
+        ],
+        [
+            KeyboardButton(text="Другое"),
+        ]
+    ],
+    resize_keyboard=True,
+    reply_markup=None,
+)
+
+
+back_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Меню'),
+            KeyboardButton(text='Назад'),
+        ]
+    ],
 )
 
 

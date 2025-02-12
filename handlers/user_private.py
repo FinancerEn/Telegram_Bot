@@ -4,10 +4,13 @@ from aiogram.types import FSInputFile
 from text_message import text
 # Импорт Bold для того что бы сделать шрифт жирным
 from aiogram.utils.formatting import Bold
+# Импорты 2 штуки из файла handler_logic.py
+# from kbds.inline import platform_kb
+from text_message.text import selling_text_2
 
 from filters.chat_types import ChatTypeFilter
 
-from kbds import reply, inline
+from kbds import reply
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
@@ -16,13 +19,16 @@ user_private_router = Router()
 # используется только в чатах. Если gropup то в группах или оба сразу.
 user_private_router.message.filter(ChatTypeFilter(["private"]))
 
+# Хранилище данных пользователей
+order_data = {}
+
 
 # dp.message - декоратор обработки событий приходящих к боту.
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
     # reply_markup - обращаюсь к клавиатуре из файла reply.py, папки kbds.
     # Ответить с упоминанием автора код: await message.reply(message.text)
-    await message.answer(text.selling_text_4, reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text_4, reply_markup=reply.submenu_markup)
 
 
 #                          Хэндлеры:
@@ -30,7 +36,7 @@ async def start_cmd(message: types.Message):
 async def menu_cmd(message: types.Message):
     photo = FSInputFile("images/start_image_2.webp")
     await message.answer_photo(
-        photo, "Что Вас интересует?🧐", reply_markup=reply.submenu_kd
+        photo, "Выберите пункт меню, ниже ▩🧐", reply_markup=reply.submenu_markup
     )
 
 
@@ -38,7 +44,7 @@ async def menu_cmd(message: types.Message):
 async def reviews(message: types.Message):
 
     texts = Bold("Отзывы наших клиентов 😊")  # Делаем текст жирным
-    await message.answer(texts.as_html(), parse_mode="HTML", reply_markup=reply.submenu_kd)
+    await message.answer(texts.as_html(), parse_mode="HTML", reply_markup=reply.submenu_markup)
 
     photo = FSInputFile("images/review1.webp")
     photo_2 = FSInputFile("images/review1.webp")
@@ -46,34 +52,141 @@ async def reviews(message: types.Message):
     await message.answer_photo(photo_2)
 
 
-@user_private_router.message(
-    or_f(Command("Кейсы"), F.text.casefold() == "варианты оплаты")
-)
+@user_private_router.message(F.text.casefold() == "Варианты оплаты")
 async def payment_cmd(message: types.Message):
-    await message.answer("Кейсы: Тут должны быть кейсы", reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text, reply_markup=reply.reply_markup)
 
 
 @user_private_router.message(F.text.casefold() == "заказать разработку бота")
 async def about_cmd(message: types.Message):
-    await message.answer(text.selling_text, reply_markup=inline.platform_kb)
+    await message.answer(text.selling_text, reply_markup=reply.reply_markup)
 
 
 @user_private_router.message(F.text.casefold() == "стоимость услуг")
 async def new_menu_cmd(message: types.Message):
-    await message.answer(text.selling_text_3, reply_markup=reply.submenu_kd)
+    await message.answer(text.selling_text_3, reply_markup=reply.reply_markup)
 
 
-# Генерируем ответ на определённые ключевые слова
-# @user_private_router.message(lambda message: message.content_type == types.ContentType.TEXT)
-# async def echo(message: types.Message):
-#     text = message.text
+# ___Начало второго меню___
+# Функция для сохранения данных пользователя
+def save_user_data(user_id, user_text):
+    order_data[user_id] = {"platform": "", "user_text": user_text}
 
-#     if text:  # Проверяем, что text не None
-#         if text.lower() in ['привет', 'здравствуйте', 'добрый день', 'hi', 'hello', 'добрый вечер', 'доброе утро']:
-#             await message.answer('Здравствуйте!')
-#         elif text.lower() in ['до свидания', 'досвидания', 'пока', 'пакеда', 'прощайте']:
-#             await message.answer('До свидания')
+
+@user_private_router.message(F.text.casefold() == "telegram")
+async def handle_telegram(message: types.Message):
+    await message.answer(selling_text_2, reply_markup=reply.back_markup)
+
+
+@user_private_router.message(F.text.casefold() == "instagram")
+async def handle_instagram(message: types.Message):
+    await message.answer(selling_text_2, reply_markup=reply.back_markup)
+
+
+@user_private_router.message(F.text.casefold() == "vk")
+async def handle_vk(message: types.Message):
+    await message.answer(selling_text_2, reply_markup=reply.back_markup)
+
+
+@user_private_router.message(F.text.casefold() == "whatsapp")
+async def handle_whatsapp(message: types.Message):
+    await message.answer(selling_text_2, reply_markup=reply.back_markup)
+
+
+@user_private_router.message(F.text.casefold() == "другое")
+async def handle_other(message: types.Message):
+    await message.answer(selling_text_2, reply_markup=reply.back_markup)
+
+
+@user_private_router.message(F.text.casefold() == "назад")
+async def handle_back(message: types.Message):
+    await message.answer('Выберите пункт меню', reply_markup=reply.submenu_markup)
+
+
+# @user_private_router.callback_query(F.data.in_({
+#     "platform_telegram",
+#     "platform_instagram",
+#     "platform_vk",
+#     "platform_whatsapp",
+#     "platform_other"
+# }))
+# async def handle_platform_callback(callback: types.CallbackQuery):
+#     if callback.message:
+#         await callback.message.answer(selling_text_2)
+#     await callback.answer()
+
+
+# # 1️⃣ Декоратор для callback-хендлеров → @user_private_router.callback_query
+# @user_private_router.callback_query()
+# async def handle_telegram_callback(callback: types.CallbackQuery):
+#     print("Кнопка нажата!")
+#     if callback.data == "platform_telegram":
+#         if callback.message:
+#             await callback.message.answer(selling_text_2)
 #         else:
-#             await message.answer(text)
+#             await callback.answer("Сообщение недоступно")
+
+
+# @user_private_router.callback_query(F.data == "platform_instagram")
+# async def handle_instagram_callback(callback: types.CallbackQuery):
+#     if callback.message:
+#         await callback.message.answer(selling_text_2)
 #     else:
-#         await message.answer("Сообщение не содержит текста.")
+#         await callback.answer("Сообщение недоступно")
+
+
+# @user_private_router.callback_query(F.data == "platform_vk")
+# async def handle_vk_callback(callback: types.CallbackQuery):
+#     if callback.message:
+#         await callback.message.answer(selling_text_2)
+#     else:
+#         await callback.answer("Сообщение недоступно")
+
+
+# @user_private_router.callback_query(F.data == "platform_whatsapp")
+# async def handle_Whatsapp_callback(callback: types.CallbackQuery):
+#     if callback.message:
+#         await callback.message.answer(selling_text_2)
+#     else:
+#         await callback.answer("Сообщение недоступно")
+
+
+# @user_private_router.callback_query(F.data == "platform_other")
+# async def handle_other_callback(callback: types.CallbackQuery):
+#     if callback.message:
+#         await callback.message.answer(selling_text_2)
+#     else:
+#         await callback.answer("Сообщение недоступно")
+
+
+# @user_private_router.message(F.text)
+# async def handle_user_text(message: types.Message):
+#     if message.from_user:  # Проверяем, что from_user не None
+#         user_id = message.from_user.id  # Получаем ID пользователя
+#         user_text = message.text  # Получаем текст, который пользователь ввел
+
+#         # Сохраняем введенный текст в словарь
+#     if user_id in order_data:
+#         order_data[user_id]["user_text"] = user_text
+#         await message.answer(f"Спасибо за ваш ответ! Мы получили: {user_text}")
+
+#         # Очистка данных пользователя после обработки
+#         del order_data[user_id]
+#     else:
+#         await message.answer("Ошибка. Попробуйте снова.")
+
+
+# # Генерируем ответ на определённые ключевые слова
+# # @user_private_router.message(lambda message: message.content_type == types.ContentType.TEXT)
+# # async def echo(message: types.Message):
+# #     text = message.text
+
+# #     if text:  # Проверяем, что text не None
+# #         if text.lower() in ['привет', 'здравствуйте', 'добрый день', 'hi', 'hello', 'добрый вечер', 'доброе утро']:
+# #             await message.answer('Здравствуйте!')
+# #         elif text.lower() in ['до свидания', 'досвидания', 'пока', 'пакеда', 'прощайте']:
+# #             await message.answer('До свидания')
+# #         else:
+# #             await message.answer(text)
+# #     else:
+# #         await message.answer("Сообщение не содержит текста.")

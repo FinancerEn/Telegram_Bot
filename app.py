@@ -1,15 +1,18 @@
 # Импорты Питона.
 import asyncio
 import os
+
 # Импорты фреймворка.
 from aiogram import Bot, Dispatcher
-# Импорты которые касаются проекта.
-from dotenv import load_dotenv
 from aiogram.types import BotCommandScopeAllPrivateChats
+from dotenv import load_dotenv
+
 # Подключаем наш кастомный файл взаимодействия с пользователем.
 from handlers.user_private import user_private_router
 from handlers.user_group import user_group_router
-from common.bot_comds_list import private
+from handlers.admin_private import admin_router
+
+# from handlers.handler_logic import handler_logic_router
 
 
 load_dotenv()
@@ -25,9 +28,11 @@ if not TOKEN:
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
+
 # Подключение маршрутов
 dp.include_router(user_private_router)
 dp.include_router(user_group_router)
+dp.include_router(admin_router)
 
 
 async def main():
@@ -50,4 +55,5 @@ async def main():
     #     print(f"Ошибка: {e}")
     # await dp.start_polling(bot, allowed_updates=ALLOWED_UPDATES)
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

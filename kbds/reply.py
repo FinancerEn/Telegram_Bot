@@ -13,7 +13,7 @@ submenu_markup = ReplyKeyboardMarkup(
         [
             KeyboardButton(text="меню"),
             KeyboardButton(text="Отзывы"),
-            KeyboardButton(text="Кейсы"),
+            KeyboardButton(text="Варианты оплаты"),
         ],
         [
             KeyboardButton(text="Заказать разработку бота"),
@@ -37,6 +37,7 @@ reply_markup = ReplyKeyboardMarkup(
         ],
         [
             KeyboardButton(text="Другое"),
+            KeyboardButton(text="назад"),
         ]
     ],
     resize_keyboard=True,
@@ -48,9 +49,12 @@ back_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='Меню'),
+        ],
+        [
             KeyboardButton(text='Назад'),
         ]
     ],
+    resize_keyboard=True,
 )
 
 

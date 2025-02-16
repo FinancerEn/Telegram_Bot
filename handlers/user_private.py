@@ -6,8 +6,6 @@ from text_message import text
 from aiogram.utils.formatting import Bold
 # Импорты 2 штуки из файла handler_logic.py
 # from kbds.inline import platform_kb
-from text_message.text import selling_text_2, selling_text_5, selling_text_6
-
 from filters.chat_types import ChatTypeFilter
 
 from kbds import reply
@@ -53,23 +51,8 @@ async def cost_cmd(message: types.Message):
 
 
 # __________________3 меню, с оформлением__________________
-@user_private_router.message(F.text.casefold() == "оформить заказ")
-async def decoration_other(message: types.Message):
-    await message.answer(selling_text_6, reply_markup=reply.last_markup)
-
-
-@user_private_router.message(F.text.casefold() == "назад к выбору платформы")
-async def handle_back(message: types.Message):
-    await message.answer(text.selling_text, reply_markup=reply.reply_markup)
-
-
 @user_private_router.message(F.text.casefold() == "назад")
 async def handle_back_2(message: types.Message):
-    await message.answer("Вы уже в главном меню", reply_markup=reply.submenu_markup)
-
-
-@user_private_router.message(F.text.casefold() == "оформляем заказ")
-async def handle_sending_the_user(message: types.Message):
     await message.answer("Вы уже в главном меню", reply_markup=reply.submenu_markup)
 
 

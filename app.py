@@ -12,15 +12,14 @@ from handlers.user_private import user_private_router
 from handlers.user_group import user_group_router
 from handlers.admin_private import admin_router
 from handlers.handler_logic import handler_logic_router
-
-# from handlers.handler_logic import handler_logic_router
+from handlers.inlain_logic import inlain_logic_router
 
 
 load_dotenv()
 
 # Указанны то что мы хотим что бы приходило из серверов телеграмма(те методы).
 # Затем указываем эту нашу переменную ALLOWED_UPDATES в main, остальное приходить не будет.
-ALLOWED_UPDATES = ['message', 'edited_message']
+ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query']
 
 TOKEN = os.getenv('TOKEN')
 if not TOKEN:
@@ -35,6 +34,7 @@ dp.include_router(user_private_router)
 dp.include_router(user_group_router)
 dp.include_router(admin_router)
 dp.include_router(handler_logic_router)
+dp.include_router(inlain_logic_router)
 
 
 async def main():

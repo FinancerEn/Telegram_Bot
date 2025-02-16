@@ -11,14 +11,16 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="меню"),
+            KeyboardButton(text="Меню"),
             KeyboardButton(text="Отзывы"),
+        ],
+        [
             KeyboardButton(text="Варианты оплаты"),
+            KeyboardButton(text="Стоимость"),
         ],
         [
             KeyboardButton(text="Заказать разработку бота"),
-            KeyboardButton(text="Стоимость услуг"),
-        ]
+        ],
     ],
     resize_keyboard=True,
     input_field_placeholder='Что Вас интересует?',
@@ -32,7 +34,7 @@ reply_markup = ReplyKeyboardMarkup(
             KeyboardButton(text="Instagram"),
         ],
         [
-            KeyboardButton(text="vk"),
+            KeyboardButton(text="ВКонтакте"),
             KeyboardButton(text="Whatsapp"),
         ],
         [
@@ -45,7 +47,72 @@ reply_markup = ReplyKeyboardMarkup(
 )
 
 
+reply_markup_2 = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="Чат-бот визитка"),
+        ],
+        [
+            KeyboardButton(text="Квиз-ботэто - опросник"),
+        ],
+        [
+            KeyboardButton(text="Товарный бот - бот каталог"),
+        ],
+        [
+            KeyboardButton(text="Автовебинарный бот"),
+        ],
+        [
+            KeyboardButton(text="Другие услуги"),
+        ],
+        [
+            KeyboardButton(text="Назад к выбору платформы"),
+        ]
+    ],
+    resize_keyboard=True,
+    reply_markup=None,
+)
+
+
 back_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Оформить заказ'),
+        ],
+        [
+            KeyboardButton(text='Назад'),
+        ]
+    ],
+    resize_keyboard=True,
+)
+
+
+back_selection = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Оформить заказ'),
+        ],
+        [
+            KeyboardButton(text='Назад к выбору платформы'),
+        ]
+    ],
+    resize_keyboard=True,
+)
+
+
+back_markup_2 = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Далее'),
+        ],
+        [
+            KeyboardButton(text='Назад'),
+        ]
+    ],
+    resize_keyboard=True,
+)
+
+
+decoration_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='Меню'),
@@ -53,6 +120,16 @@ back_markup = ReplyKeyboardMarkup(
         [
             KeyboardButton(text='Назад'),
         ]
+    ],
+    resize_keyboard=True,
+)
+
+
+last_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='Оформляем заказ'),
+        ],
     ],
     resize_keyboard=True,
 )

@@ -130,6 +130,9 @@ last_markup = ReplyKeyboardMarkup(
         [
             KeyboardButton(text='Оформляем заказ'),
         ],
+        [
+            KeyboardButton(text='Назад'),
+        ]
     ],
     resize_keyboard=True,
 )

@@ -1,14 +1,20 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-# Создаем inline-клавиатуру с кнопками в столбик
+# Создаем inline-клавиатуру с кнопками в столбик и в два столбика
 # Где row_width=1 означает, что каждая кнопка будет в отдельном ряду.
 platform_kb = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Telegram", callback_data="platform_telegram")],
-        [InlineKeyboardButton(text="Instagram", callback_data="platform_instagram")],
-        [InlineKeyboardButton(text="ВКонтакте", callback_data="platform_vk")],
-        [InlineKeyboardButton(text="WhatsApp", callback_data="platform_whatsapp")],
-        [InlineKeyboardButton(text="Другое", callback_data="platform_other")]
+        [
+            InlineKeyboardButton(text="💬 Telegram", callback_data="platform_telegram"),
+            InlineKeyboardButton(text="📸 Instagram", callback_data="platform_instagram")
+        ],
+        [
+            InlineKeyboardButton(text="📲 ВКонтакте", callback_data="platform_vk"),
+            InlineKeyboardButton(text="☎️ WhatsApp", callback_data="platform_whatsapp")
+        ],
+        [
+            InlineKeyboardButton(text="🔍 Другое", callback_data="platform_other")
+        ]
     ]
 )
 

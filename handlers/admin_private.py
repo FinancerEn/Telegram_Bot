@@ -1,28 +1,46 @@
+import os
+from typing import Optional
+from dotenv import load_dotenv
 from aiogram import Router, types, F
-from aiogram.filters import Command
+from aiogram.filters import Command, BaseFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
-from filters.chat_types import ChatTypeFilter, IsAdmin
+from filters.chat_types import ChatTypeFilter
+
+# Загружаем переменные окружения
+load_dotenv()
+
+# Получаем ID админа
+ADMIN_ID_ENV = os.getenv("ADMIN_ID")
+ADMIN_ID: Optional[int] = int(ADMIN_ID_ENV) if ADMIN_ID_ENV and ADMIN_ID_ENV.isdigit() else None
+
+
+# Фильтр проверки администратора
+class IsAdmin(BaseFilter):
+    async def __call__(self, message: types.Message) -> bool:
+        if message.from_user and message.from_user.id:
+            is_admin = message.from_user.id == ADMIN_ID
+            print(f"🔍 Проверка IsAdmin: {message.from_user.id} -> {is_admin}")  # Логируем
+            return is_admin
+        return False
 
 
 # Маршрутизатор для администратора
 admin_router = Router()
 admin_router.message.filter(ChatTypeFilter(["private"]), IsAdmin())
 
-
-# Клавиатура для администратора
+# Клавиатура администратора
 ADMIN_KB = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Создать заказ")],
         [KeyboardButton(text="Просмотр заказов"), KeyboardButton(text="Удалить заказ")],
     ],
     resize_keyboard=True,
-    sizes=(2,),
 )
 
 
-# Состояния FSM для обработки заявок
+# Состояния FSM для обработки заказов
 class OrderState(StatesGroup):
     client_name = State()
     bot_purpose = State()
@@ -30,10 +48,10 @@ class OrderState(StatesGroup):
     contact_info = State()
 
 
-# Команда /admin для входа в режим администратора
+# Команда /admin для входа в панель администратора
 @admin_router.message(Command("admin"))
 async def admin_panel(message: types.Message):
-    print("Всё работает отлично")
+    print("✅ Всё работает отлично!")
     await message.answer("Добро пожаловать в панель администратора!", reply_markup=ADMIN_KB)
 
 
@@ -79,12 +97,13 @@ async def set_contact_info(message: types.Message, state: FSMContext):
     await state.clear()
 
 
-# Заглушки для просмотра и удаления заказов
+# Просмотр заказов
 @admin_router.message(F.text == "Просмотр заказов")
 async def view_orders(message: types.Message):
     await message.answer("📋 Пока что заказов нет.")
 
 
+# Удаление заказа
 @admin_router.message(F.text == "Удалить заказ")
 async def delete_order(message: types.Message):
     await message.answer("🔍 Укажите ID заказа для удаления (пока не реализовано).")

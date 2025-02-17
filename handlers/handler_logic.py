@@ -24,7 +24,7 @@ async def about_cmd(message: types.Message):
 # ______________________Начало второго меню_______________________
 @handler_logic_router.message(F.text.casefold() == "telegram")
 async def handle_telegram(message: types.Message):
-    await message.answer(text.selling_text_2, reply_markup=reply.reply_markup_2)
+    await message.answer(text.selling_text_5, reply_markup=reply.reply_markup_2)
 
 
 @handler_logic_router.message(F.text.casefold() == "instagram")
@@ -44,7 +44,7 @@ async def handle_whatsapp(message: types.Message):
 
 @handler_logic_router.message(F.text.casefold() == "другое")
 async def handle_other(message: types.Message):
-    await message.answer(text.selling_text_2)
+    await message.answer(text.selling_text_5)
     await message.answer('Введите свои пожелания в поле ввода сообщений', reply_markup=reply.reply_markup_2)
 
 

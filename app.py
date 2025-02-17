@@ -8,11 +8,14 @@ from aiogram.types import BotCommandScopeAllPrivateChats
 from dotenv import load_dotenv
 
 # Подключаем наш кастомный файл взаимодействия с пользователем.
+from middlewares.db import DataBaseSession
+from database.engine import create_db, drop_db, session_maker
 from handlers.user_private import user_private_router
 from handlers.user_group import user_group_router
 from handlers.admin_private import admin_router
 from handlers.handler_logic import handler_logic_router
 from handlers.inlain_logic import inlain_logic_router
+
 
 load_dotenv()
 
@@ -36,7 +39,25 @@ dp.include_router(handler_logic_router)
 dp.include_router(inlain_logic_router)
 
 
+async def on_startup(bot):
+
+    run_param = False
+    if run_param:
+        await drop_db()
+
+    await create_db()
+
+
+async def on_shutdown(bot):
+    print('бот лег')
+
+
 async def main():
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
+
+    dp.update.middleware(DataBaseSession(session_pool=session_maker))
+
     await bot.delete_webhook(drop_pending_updates=True)
     # await bot.set_my_commands(commands=private, scope=BotCommandScopeAllPrivateChats())
     # Удаляем сохранённое меню команд

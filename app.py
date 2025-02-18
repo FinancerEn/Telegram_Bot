@@ -7,9 +7,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommandScopeAllPrivateChats
 from dotenv import load_dotenv
 
-# Подключаем наш кастомный файл взаимодействия с пользователем.
+# Импорты Middleware для базы данных..
 from middlewares.db import DataBaseSession
 from database.engine import create_db, drop_db, session_maker
+# Подключаем наш кастомный файл взаимодействия с пользователем.
 from handlers.user_private import user_private_router
 from handlers.user_group import user_group_router
 from handlers.admin_private import admin_router
@@ -39,6 +40,9 @@ dp.include_router(handler_logic_router)
 dp.include_router(inlain_logic_router)
 
 
+# Функции относящиеся к БД, (движку моделей из engine.py).
+# Если run_param=True, база удалится и создастся заново.
+# Иначе просто создаётся база, если её ещё нет.
 async def on_startup(bot):
 
     run_param = False
@@ -48,17 +52,21 @@ async def on_startup(bot):
     await create_db()
 
 
+# Просто выводит сообщение при остановке бота.
 async def on_shutdown(bot):
     print('бот лег')
 
 
 async def main():
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
+    # Используем функции: on_startup, on_shutdown относящиеся к БД, (движку из engine.py).
+    dp.startup.register(on_startup)  # Выполнить on_startup при запуске и создаётся база.
+    dp.shutdown.register(on_shutdown)  # Выполнить on_shutdown при завершении
 
+    # Реализуем наш Middleware слой.
+    # Теперь в каждый хендлер нашего проекта будет пробрасываться сессия.
     dp.update.middleware(DataBaseSession(session_pool=session_maker))
 
-    await bot.delete_webhook(drop_pending_updates=True)
+    await bot.delete_webhook(drop_pending_updates=True)  # Очищает старые обновления
     # await bot.set_my_commands(commands=private, scope=BotCommandScopeAllPrivateChats())
     # Удаляем сохранённое меню команд
     await bot.delete_my_commands(scope=BotCommandScopeAllPrivateChats())

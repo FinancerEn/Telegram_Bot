@@ -8,7 +8,7 @@ from aiogram.utils.formatting import Bold
 # from kbds.inline import platform_kb
 from filters.chat_types import ChatTypeFilter
 
-from kbds import reply
+from kbds import inline, reply
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
@@ -42,7 +42,7 @@ async def reviews(message: types.Message):
 
 @user_private_router.message(F.text.casefold() == "варианты оплаты")
 async def payment_cmd(message: types.Message):
-    await message.answer(text.selling_text, reply_markup=reply.back_markup)
+    await message.answer(text.selling_text, reply_markup=inline.platform_kb)
 
 
 @user_private_router.message(F.text.casefold() == "стоимость")

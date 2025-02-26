@@ -15,4 +15,4 @@ class Product(Base):
     name: Mapped[str] = mapped_column(String(150), nullable=False)
     description: Mapped[str] = mapped_column(Text)
     price: Mapped[float] = mapped_column(Float(asdecimal=True), nullable=False)
-    image = Column(String(255), nullable=True)
+    image = Column(String(150), nullable=True)

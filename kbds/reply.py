@@ -8,6 +8,17 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
+# Клавиатура для администратора
+ADMIN_KB = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Создать заказ"), KeyboardButton(text="Удалить заказ")],
+        [KeyboardButton(text="Просмотр заказов"), KeyboardButton(text="Назад")],
+    ],
+    resize_keyboard=True,
+    sizes=(2,),
+)
+
+
 submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -23,7 +34,7 @@ submenu_markup = ReplyKeyboardMarkup(
         ],
     ],
     resize_keyboard=True,
-    input_field_placeholder='Что Вас интересует?',
+    input_field_placeholder="Что Вас интересует?",
 )
 
 
@@ -40,7 +51,7 @@ reply_markup = ReplyKeyboardMarkup(
         [
             KeyboardButton(text="Другое"),
             KeyboardButton(text="назад"),
-        ]
+        ],
     ],
     resize_keyboard=True,
     reply_markup=None,
@@ -66,7 +77,7 @@ reply_markup_2 = ReplyKeyboardMarkup(
         ],
         [
             KeyboardButton(text="Назад к выбору платформы"),
-        ]
+        ],
     ],
     resize_keyboard=True,
     reply_markup=None,
@@ -76,11 +87,11 @@ reply_markup_2 = ReplyKeyboardMarkup(
 back_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Оформить заказ'),
+            KeyboardButton(text="Оформить заказ"),
         ],
         [
-            KeyboardButton(text='Назад'),
-        ]
+            KeyboardButton(text="Назад"),
+        ],
     ],
     resize_keyboard=True,
 )
@@ -89,11 +100,11 @@ back_markup = ReplyKeyboardMarkup(
 back_selection = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Оформить заказ'),
+            KeyboardButton(text="Оформить заказ"),
         ],
         [
-            KeyboardButton(text='Назад к выбору платформы'),
-        ]
+            KeyboardButton(text="Назад к выбору платформы"),
+        ],
     ],
     resize_keyboard=True,
 )
@@ -102,11 +113,11 @@ back_selection = ReplyKeyboardMarkup(
 back_markup_2 = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Далее'),
+            KeyboardButton(text="Далее"),
         ],
         [
-            KeyboardButton(text='Назад'),
-        ]
+            KeyboardButton(text="Назад"),
+        ],
     ],
     resize_keyboard=True,
 )
@@ -115,11 +126,24 @@ back_markup_2 = ReplyKeyboardMarkup(
 decoration_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Меню'),
+            KeyboardButton(text="Меню"),
         ],
         [
-            KeyboardButton(text='Назад'),
-        ]
+            KeyboardButton(text="Назад"),
+        ],
+    ],
+    resize_keyboard=True,
+)
+
+
+cancellation_markup = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="Отмена"),
+        ],
+        [
+            KeyboardButton(text="Назад_"),
+        ],
     ],
     resize_keyboard=True,
 )
@@ -128,11 +152,11 @@ decoration_markup = ReplyKeyboardMarkup(
 last_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Оформляем заказ'),
+            KeyboardButton(text="Оформляем заказ"),
         ],
         [
-            KeyboardButton(text='Назад'),
-        ]
+            KeyboardButton(text="Назад"),
+        ],
     ],
     resize_keyboard=True,
 )

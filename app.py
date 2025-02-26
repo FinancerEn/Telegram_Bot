@@ -60,7 +60,7 @@ async def on_shutdown(bot):
 async def main():
     # Используем функции: on_startup, on_shutdown относящиеся к БД, (движку из engine.py).
     dp.startup.register(on_startup)  # Выполнить on_startup при запуске и создаётся база.
-    dp.shutdown.register(on_shutdown)  # Выполнить on_shutdown при завершении
+    dp.shutdown.register(on_shutdown)  # Выполнить on_shutdown при завершении работы бота.
 
     # Реализуем наш Middleware слой.
     # Теперь в каждый хендлер нашего проекта будет пробрасываться сессия.

@@ -21,7 +21,8 @@ engine = create_async_engine(db_url, echo=True)
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 
-# Что бы система ORM создала (и удаляла) таблицы которые описанны в models.
+# Создаём или удаляем через ORM систему таблицы которые описанны в models.
+# Когда вызывается Base.metadata.create_all, SQLAlchemy создаёт таблицы в базе.
 async def create_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

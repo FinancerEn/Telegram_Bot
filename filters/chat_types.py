@@ -2,9 +2,9 @@
 # Импортируем Filter базовый класс.
 from aiogram.filters import Filter
 from aiogram.types import Message
-from aiogram import Bot
-from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import ChatMemberAdministrator, ChatMemberOwner
+# from aiogram import Bot
+# from aiogram.exceptions import TelegramBadRequest
+# from aiogram.types import ChatMemberAdministrator, ChatMemberOwner
 
 
 class ChatTypeFilter(Filter):

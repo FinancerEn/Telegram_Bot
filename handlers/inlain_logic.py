@@ -36,7 +36,7 @@ async def handle_service_order(callback: types.CallbackQuery):
 
 
 # Хендлер для inline кнопки "Назад к выбору платформы"
-@inlain_logic_router.callback_query(F.data == "back_to_platforms")
+@inlain_logic_router.callback_query(F.data == "arrange_back")
 async def back_to_platforms(callback: types.CallbackQuery):
     if isinstance(callback.message, types.Message):  # Проверяем, доступно ли сообщение
         await callback.message.edit_text(

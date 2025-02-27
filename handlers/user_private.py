@@ -2,6 +2,7 @@ from aiogram import F, types, Router
 from aiogram.filters import CommandStart, Command, or_f
 from aiogram.types import FSInputFile
 from text_message import text
+from aiogram.types import CallbackQuery
 # Импорт Bold для того что бы сделать шрифт жирным
 from aiogram.utils.formatting import Bold
 # Импорты 2 штуки из файла handler_logic.py
@@ -23,10 +24,11 @@ async def start_cmd(message: types.Message):
     await message.answer(text.selling_text_4, reply_markup=reply.submenu_markup)
 
 
-@user_private_router.message(or_f(Command("menu"), F.text.casefold() == "меню"))
+@user_private_router.message(or_f(Command("menu"), F.text.lower() == "варианты меню"))
 async def menu_cmd(message: types.Message):
     photo = FSInputFile("images/start_image_2.webp")
-    await message.answer_photo(photo, "Выберите пункт меню, ниже ▩🧐", reply_markup=reply.submenu_markup)
+    await message.answer_photo(photo, "Посмотрет какие бывают меню 🧐 И выберите любое для проверки",
+                               reply_markup=inline.inline_menu_options)
 
 
 @user_private_router.message(F.text.casefold() == "отзывы")
@@ -48,6 +50,28 @@ async def payment_cmd(message: types.Message):
 @user_private_router.message(F.text.casefold() == "стоимость")
 async def cost_cmd(message: types.Message):
     await message.answer(text.selling_text_3, reply_markup=reply.back_markup)
+
+
+@user_private_router.callback_query(F.data == "inline_menu")
+async def show_inline_menu(callback: CallbackQuery):
+    await callback.message.answer(text.information_inline_menu, reply_markup=inline.platform_services_kb)
+    await callback.answer()
+
+
+@user_private_router.callback_query(F.data == "reply_menu")
+async def show_reply_menu(callback: CallbackQuery):
+    photo = FSInputFile("images/reply.webp")
+    await callback.message.answer(text.information_reply_menu, reply_markup=reply.submenu_markup)
+    await callback.message.answer_photo(photo)
+    await callback.answer()
+
+
+@user_private_router.callback_query(F.data == "standard_back")
+async def show_reply_menu(callback: CallbackQuery):
+    photo = FSInputFile("images/difolt_menu.webp")
+    await callback.message.answer(text.information_difolt_menu)
+    await callback.message.answer_photo(photo)
+    await callback.answer()
 
 
 # __________________3 меню, с оформлением__________________

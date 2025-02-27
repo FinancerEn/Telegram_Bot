@@ -22,7 +22,7 @@ ADMIN_KB = ReplyKeyboardMarkup(
 submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Меню"),
+            KeyboardButton(text="Варианты меню"),
             KeyboardButton(text="Отзывы"),
         ],
         [
@@ -54,7 +54,6 @@ reply_markup = ReplyKeyboardMarkup(
         ],
     ],
     resize_keyboard=True,
-    reply_markup=None,
 )
 
 
@@ -80,7 +79,6 @@ reply_markup_2 = ReplyKeyboardMarkup(
         ],
     ],
     resize_keyboard=True,
-    reply_markup=None,
 )
 
 

@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from database.models import Product
 from filters.chat_types import ChatTypeFilter
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Union
+from aiogram.filters import Filter
 
 from kbds import reply
 
@@ -21,10 +21,9 @@ ADMIN_ID: Optional[int] = int(ADMIN_ID_ENV) if ADMIN_ID_ENV and ADMIN_ID_ENV.isd
 
 
 # Фильтр проверки администратора
-class IsAdmin:
-    async def __call__(self, message: Union[types.Message, None]) -> bool:
+class IsAdmin(Filter):
+    async def __call__(self, message: types.Message) -> bool:
         if message is None or message.from_user is None:
-            # print(f"🔍 Проверка IsAdmin: {message.from_user.id} -> {is_admin}")
             return False  # Если сообщения нет или оно анонимное — не админ
 
         return message.from_user.id == ADMIN_ID

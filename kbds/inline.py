@@ -62,9 +62,16 @@ platform_services_kb = InlineKeyboardMarkup(
 
 inline_back_selection = InlineKeyboardMarkup(
     inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Оформить заказ", callback_data="arrange_order"),
-        ],
+        [InlineKeyboardButton(text="Оформить заказ", callback_data="arrange_order")],
+        [InlineKeyboardButton(text="Назад к выбору бота", callback_data="arrange_back")],
+    ],
+)
+
+inline_menu_options = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="inline меню", callback_data="inline_menu")],
+        [InlineKeyboardButton(text="reply меню", callback_data="reply_menu")],
+        [InlineKeyboardButton(text="Стандартное меню", callback_data="standard_back")],
     ],
 )
 

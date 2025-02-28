@@ -33,6 +33,23 @@ platform_kb = InlineKeyboardMarkup(
 # service — может означать "тип услуги", vizitka — конкретный вид услуги (например, "бот-визитка").
 # При нажатии на кнопку "Чат-бот визитка" с callback_data="service_vizitka" в callback_query.data
 # прилетит строка "service_vizitka", которую можно обработать в хендлере.
+
+inline_keyboard_main = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="Варианты меню", callback_data="main_variants"),
+            InlineKeyboardButton(text="Отзывы", callback_data="main_reviews"),
+        ],
+        [
+            InlineKeyboardButton(text="Варианты оплаты", callback_data="main_options"),
+            InlineKeyboardButton(text="Стоимость", callback_data="main_cost_"),
+        ],
+        [
+            InlineKeyboardButton(text="Заказать разработку бота", callback_data="main_development"),
+        ],
+    ],
+)
+
 platform_services_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Чат-бот визитка", callback_data="service_vizitka")],
@@ -67,12 +84,44 @@ inline_back_selection = InlineKeyboardMarkup(
     ],
 )
 
+inline_back_1 = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Назад к выбору меню", callback_data="back_menu")],
+    ],
+)
+
 inline_menu_options = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="inline меню", callback_data="inline_menu")],
         [InlineKeyboardButton(text="reply меню", callback_data="reply_menu")],
         [InlineKeyboardButton(text="Стандартное меню", callback_data="standard_back")],
     ],
+)
+
+inline_options = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Пример Ссылки", callback_data="link_resource")],
+        [
+            InlineKeyboardButton(
+                text="Пример Текста", callback_data="text_button"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Пример Картинки", callback_data="image_button"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Пример меню", callback_data="other_menu"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🔙 Назад к выбору меню", callback_data="back_to_menu"
+            )
+        ],
+    ]
 )
 
 

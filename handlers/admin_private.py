@@ -72,22 +72,6 @@ async def create_order(message: types.Message, state: FSMContext):
     await state.set_state(OrderState.name)
 
 
-# Хендлер отмены и сброса состояния должен быть всегда именно хдесь,
-# после того как только встали в состояние номер 1 (элементарная очередность фильтров).
-# Кнопка "Отмена" сбрасывает состояние FSM, то есть выводит пользователя из процесса создания заказа.
-@admin_router.message(Command("отмена"), F.state)
-@admin_router.message(F.text.casefold() == "отмена", F.state)
-async def cancel_handler(message: types.Message, state: FSMContext):
-    print(f"📌 Хэндлер 'Отмена' вызван. Текущее состояние: {await state.get_state()}")
-    current_state = await state.get_state()
-    if current_state is None:
-        print("🔕 Состояние уже сброшено, выходим")
-        return  # Уже сброшено, ничего не делаем
-    print("🔴 Кнопка 'Отмена' нажата")  # Проверяем вызов
-    await state.clear()  # Очищаем состояние
-    await message.answer("Действия отменены ❌", reply_markup=reply.ADMIN_KB)
-
-
 @admin_router.message(OrderState.name, F.text)
 async def set_client_name(message: types.Message, state: FSMContext):
     await state.update_data(client_name=message.text)

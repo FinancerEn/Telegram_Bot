@@ -18,16 +18,6 @@ class selectionCallback(CallbackData, prefix="arrange"):
 
 # Создаем inline-клавиатуру с кнопками в столбик и в два столбика
 # Где row_width=1 означает, что каждая кнопка будет в отдельном ряду.
-platform_kb = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(text="💬 Telegram", callback_data="platform_telegram")],
-        [InlineKeyboardButton(text="📸 Instagram", callback_data="platform_instagram")],
-        [InlineKeyboardButton(text="📲 ВКонтакте", callback_data="platform_vk")],
-        [InlineKeyboardButton(text="☎️ WhatsApp", callback_data="platform_whatsapp")],
-        [InlineKeyboardButton(text="🔍 Другое", callback_data="platform_other")],
-    ]
-)
-
 # callback_data — это строка, которая будет передана боту при нажатии на кнопку.
 # service_vizitka — это просто строка, которую мы придумали сами. Её смысл:
 # service — может означать "тип услуги", vizitka — конкретный вид услуги (например, "бот-визитка").
@@ -36,19 +26,25 @@ platform_kb = InlineKeyboardMarkup(
 
 inline_keyboard_main = InlineKeyboardMarkup(
     inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Варианты меню", callback_data="main_variants"),
-            InlineKeyboardButton(text="Отзывы", callback_data="main_reviews"),
-        ],
-        [
-            InlineKeyboardButton(text="Варианты оплаты", callback_data="main_options"),
-            InlineKeyboardButton(text="Стоимость", callback_data="main_cost_"),
-        ],
-        [
-            InlineKeyboardButton(text="Заказать разработку бота", callback_data="main_development"),
-        ],
+        [InlineKeyboardButton(text="Варианты меню", callback_data="main_variants")],
+        [InlineKeyboardButton(text="Отзывы", callback_data="main_reviews")],
+        [InlineKeyboardButton(text="Оплата и процесс работы", callback_data="main_options")],
+        [InlineKeyboardButton(text="Стоимость", callback_data="main_cost_")],
+        [InlineKeyboardButton(text="Заказать разработку бота", callback_data="main_development")],
     ],
 )
+
+platform_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="💬 Telegram", callback_data="platform_telegram")],
+        [InlineKeyboardButton(text="📸 Instagram", callback_data="platform_instagram")],
+        [InlineKeyboardButton(text="📲 ВКонтакте", callback_data="platform_vk")],
+        [InlineKeyboardButton(text="☎️ WhatsApp", callback_data="platform_whatsapp")],
+        [InlineKeyboardButton(text="🔍 Другое", callback_data="platform_other")],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="back_main_inlain")],
+    ]
+)
+
 
 platform_services_kb = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -68,7 +64,7 @@ platform_services_kb = InlineKeyboardMarkup(
                 text="Автовебинарный бот", callback_data="service_webinar"
             )
         ],
-        [InlineKeyboardButton(text="Другие услуги", callback_data="service_other")],
+        [InlineKeyboardButton(text="Другие услуги", callback_data="text_service_other")],
         [
             InlineKeyboardButton(
                 text="🔙 Назад к выбору платформы", callback_data="back_to_platforms"
@@ -80,13 +76,13 @@ platform_services_kb = InlineKeyboardMarkup(
 inline_back_selection = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Оформить заказ", callback_data="arrange_order")],
-        [InlineKeyboardButton(text="Назад к выбору бота", callback_data="arrange_back")],
+        [InlineKeyboardButton(text="Назад к выбору платформы", callback_data="arrange_back")],
     ],
 )
 
 inline_back_1 = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Назад к выбору меню", callback_data="back_menu")],
+        [InlineKeyboardButton(text="Назад к примерам", callback_data="back_menu")],
     ],
 )
 
@@ -122,6 +118,12 @@ inline_options = InlineKeyboardMarkup(
             )
         ],
     ]
+)
+
+inline_keyboard_back_main_menu = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Назад в главное меню", callback_data="back_main_menu_inline")],
+    ],
 )
 
 

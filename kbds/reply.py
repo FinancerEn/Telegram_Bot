@@ -26,7 +26,7 @@ submenu_markup = ReplyKeyboardMarkup(
             KeyboardButton(text="Отзывы"),
         ],
         [
-            KeyboardButton(text="Варианты оплаты"),
+            KeyboardButton(text="Оплата и процесс работы"),
             KeyboardButton(text="Стоимость"),
         ],
         [

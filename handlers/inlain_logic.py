@@ -7,10 +7,14 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import Order
+# импорт админа
+from dotenv import load_dotenv
 
 # Кастомные импорты
 from text_message import text
 from kbds import inline, reply
+
+load_dotenv()
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
@@ -37,11 +41,12 @@ async def handle_platform_callback(callback: types.CallbackQuery, state: FSMCont
         return
 
     platform_name = callback.data.split("_")[1]
+    # Если имя ещё не вводили, берём из Telegram first_name
     if isinstance(callback.message, types.Message):
         await state.update_data(platform=platform_name)
 
         await callback.message.edit_text(
-            f"Вы выбрали {platform_name.capitalize()}. Выберите тип бота:",
+            f"Вы выбрали {platform_name.capitalize()}! Теперь выберите тип бота 🤖:",
             reply_markup=inline.platform_services_kb
         )
         await state.set_state(UserState.bot_type)
@@ -59,7 +64,7 @@ async def handle_service_order(callback: types.CallbackQuery, state: FSMContext)
         await state.set_state(UserState.wishes)
         await state.update_data(bot_type=bot_type)
         await callback.message.edit_text(
-            text.selling_text_7, reply_markup=inline.inline_back_selection
+            text.selling_text_7, reply_markup=inline.inline_back_selection_2
         )
         await callback.answer()
 
@@ -69,21 +74,21 @@ async def handle_service_order(callback: types.CallbackQuery, state: FSMContext)
 async def save_wishes(message: types.Message, state: FSMContext):
     await state.update_data(wishes=message.text)
     await state.set_state(UserState.name)
-    await message.answer("Введите ваше имя")
+    await message.answer("Записал! Теперь введите ваше имя 📝:")
 
 
 @inlain_logic_router.message(UserState.name, F.text)
 async def handle_save_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(UserState.contacts)
-    await message.answer("Введите контактные данные (номер телефона, Telegram):")
+    await message.answer(f"Спасибо, {message.text}! Теперь укажите ваш номер телефона и удобный способ связи (Telegram, WhatsApp) 📞:")
 
 
 @inlain_logic_router.message(UserState.contacts, F.text)
 async def handle_save_contacts(message: types.Message, state: FSMContext):
     await state.update_data(contacts=message.text)
     await state.set_state(UserState.contacts)
-    await message.answer("Спасибо! Ваш заказ почти готов. Осталось только нажать кнопку 'Оформить заказ'.",
+    await message.answer("Отлично! Ваш заказ почти готов ✅. Нажмите 'Оформить заказ' для завершения! 🚀",
                          reply_markup=inline.inline_back_selection)
 
 
@@ -103,13 +108,11 @@ async def handle_save_contacts(message: types.Message, state: FSMContext):
 #         await callback.answer()
 
 
-# Хендлер оформления заказа
 @inlain_logic_router.callback_query(F.data == "arrange_order")
 async def confirm_order(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):
     if isinstance(callback.message, types.Message):
         # Получаем все данные, которые пользователь вводил ранее
         data = await state.get_data()
-        print("Данные заказа:", data)
 
         new_order = Order(
             user_id=callback.from_user.id,
@@ -123,10 +126,76 @@ async def confirm_order(callback: types.CallbackQuery, state: FSMContext, sessio
         session.add(new_order)
         # Сохраняем данные в БД
         await session.commit()
-        await callback.message.edit_text("Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.")
+        # Формируем текст уведомления
+        order_info = (
+            f"🛒 *Новый заказ!*\n"
+            f"👤 Имя: {data.get('name')}\n"
+            f"💻 Платформа: {data.get('platform')}\n"
+            f"🤖 Тип бота: {data.get('bot_type')}\n"
+            f"📝 Пожелания: {data.get('wishes')}\n"
+            f"📞 Контакты: {data.get('contacts')}\n"
+            f"🔗 ID пользователя: {callback.from_user.id}"
+        )
+
+        # Отправляем заказ в группу
+        GROUP_ID = -1002406768777
+        if GROUP_ID:
+            await callback.bot.send_message(str(GROUP_ID), order_info, parse_mode="Markdown")
+
+        # Отправляем пользователю подтверждение
+        await callback.message.edit_text("✅ Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.")
 
         # Очищаем состояние, так как заказ уже оформлен
         await state.clear()
+        await callback.answer()
+
+
+# # Хендлер оформления заказа
+# @inlain_logic_router.callback_query(F.data == "arrange_order")
+# async def confirm_order(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):
+#     if isinstance(callback.message, types.Message):
+#         # Получаем все данные, которые пользователь вводил ранее
+#         data = await state.get_data()
+#         # print("Данные заказа:", data)
+
+#         new_order = Order(
+#             user_id=callback.from_user.id,
+#             name=data.get("name"),
+#             platform=data.get("platform"),
+#             bot_type=data.get("bot_type"),
+#             wishes=data.get("wishes"),
+#             contacts=data.get("contacts")
+#         )
+
+#         session.add(new_order)
+#         # Сохраняем данные в БД
+#         await session.commit()
+
+#         # Отправляем уведомление админу
+#         if ADMIN_ID:
+#             order_info = (
+#                 f"🛒 *Новый заказ!*\n"
+#                 f"👤 Имя: {data.get('name')}\n"
+#                 f"💻 Платформа: {data.get('platform')}\n"
+#                 f"🤖 Тип бота: {data.get('bot_type')}\n"
+#                 f"📝 Пожелания: {data.get('wishes')}\n"
+#                 f"📞 Контакты: {data.get('contacts')}\n"
+#                 f"🔗 ID пользователя: {callback.from_user.id}"
+#             )
+#             await callback.bot.send_message(str(ADMIN_ID), order_info, parse_mode="Markdown")
+#         await callback.message.edit_text("Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.")
+
+#         # Очищаем состояние, так как заказ уже оформлен
+#         await state.clear()
+#         await callback.answer()
+
+
+# Обработчик кнопки "Далее"
+@inlain_logic_router.callback_query(F.data == "next_order")
+async def handle_next_order(callback: types.CallbackQuery, state: FSMContext):
+    if isinstance(callback.message, types.Message):
+        await state.set_state(UserState.name)
+        await callback.message.edit_text("Записал! Теперь введите ваше имя 📝:")
         await callback.answer()
 
 

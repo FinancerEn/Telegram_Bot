@@ -22,8 +22,10 @@ user_private_router.message.filter(ChatTypeFilter(["private"]))
 
 @user_private_router.message(CommandStart())
 async def start_cmd(message: Message):
+    # Извлекаем имя пользователя
+    user_name = message.from_user.first_name if message.from_user else "Вы"
     photo = FSInputFile("images/reply.webp")
-    await message.answer(text.welcome_text_2, reply_markup=reply.submenu_markup)
+    await message.answer(f"{user_name}👋 Добро пожаловать! Этот бот — ваш личный гид в мире автоматизации продаж.", reply_markup=reply.submenu_markup)
     await message.answer(text.selling_text_4, reply_markup=reply.submenu_markup)
     await message.answer_photo(photo)
     # Что бы подключать inline меню по команде /start раскоментировать код ниже.

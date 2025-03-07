@@ -80,6 +80,13 @@ inline_back_selection = InlineKeyboardMarkup(
     ],
 )
 
+inline_back_selection_2 = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Пропустить, далее⏩", callback_data="next_order")],
+        [InlineKeyboardButton(text="Назад к выбору платформы", callback_data="arrange_back")],
+    ],
+)
+
 inline_back_1 = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Назад к примерам", callback_data="back_menu")],

@@ -98,15 +98,15 @@ async def set_contact_info(message: types.Message, state: FSMContext, session: A
     data = await state.get_data()  # Получаем данные из FSM
     print(data)
     new_product = Product(
-        name=data.get('client_name', 'Без названия'),  # У тебя было data['name'], но в FSM такого поля нет
-        description=data.get('bot_purpose'),  # Уточняем правильные ключи
+        name=data.get('client_name', 'Без названия'),
+        description=data.get('bot_purpose'),
         price=float(data.get('budget', 0)),
         image=data.get("image", "default.jpg")
     )
 
-    session.add(new_product)  # Добавляем в сессию
+    session.add(new_product)
     await session.flush()
-    await session.commit()  # Подтверждаем изменения
+    await session.commit()
 
     await message.answer("Товар добавлен в базу!")
 

@@ -54,7 +54,7 @@ async def cleaner(message: types.Message):
 
     # Очистка текста от пунктуации и приведение к нижнему регистру
     cleaned_text = clean_text(message.text).lower()
-
+    # print(f"Chat ID: {message.chat.id}")
     # Проверка на наличие запрещённых слов
     if any(word in cleaned_text.split() for word in restricted_words):
         # Если имя пустое, подставить "Участник"

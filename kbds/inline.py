@@ -40,7 +40,6 @@ platform_kb = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="📸 Instagram", callback_data="platform_instagram")],
         [InlineKeyboardButton(text="📲 ВКонтакте", callback_data="platform_vk")],
         [InlineKeyboardButton(text="☎️ WhatsApp", callback_data="platform_whatsapp")],
-        [InlineKeyboardButton(text="🔍 Другое", callback_data="platform_other")],
         [InlineKeyboardButton(text="🔙 Назад", callback_data="back_main_inlain")],
     ]
 )

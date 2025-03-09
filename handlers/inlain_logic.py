@@ -2,11 +2,13 @@
 from aiogram import types, Router, F
 from filters.chat_types import ChatTypeFilter
 from aiogram.types import FSInputFile, CallbackQuery, Message
+
 # импорт для машины состояний
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import Order
+
 # импорт админа
 from dotenv import load_dotenv
 
@@ -26,70 +28,117 @@ inlain_logic_router.message.filter(ChatTypeFilter(["private"]))
 
 class UserState(StatesGroup):
     platform = State()
+    text_platform = State()
     bot_type = State()
+    text_service = State()
     wishes = State()
+    functional = State()
     name = State()
     contacts = State()
 
 
 # _____________Хендлеры кнопки "заказать разработку бота"___________________
 # Выбор платформы
+# Это callback-хендлер, он ловит нажатие кнопок с callback_data, начинающимся на "platform_"
 @inlain_logic_router.callback_query(F.data.startswith("platform"))
+# callback: types.CallbackQuery — объект, содержащий информацию о нажатой кнопке.
+# state: FSMContext — состояние пользователя (используется для сохранения данных между шагами).
 async def handle_platform_callback(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
+    # Проверяет, что callback.data не пустое.
     if not callback.data:
         return
 
+    # Разделяет callback_data="platform_telegram" по "_" и берёт "telegram"
     platform_name = callback.data.split("_")[1]
+
     # Если имя ещё не вводили, берём из Telegram first_name
     if isinstance(callback.message, types.Message):
+        # Сохраняет platform_name в FSMContext, чтобы использовать позже.
         await state.update_data(platform=platform_name)
+        # Переводит пользователя в состояние выбора типа бота.
+        await state.set_state(UserState.bot_type)
 
         await callback.message.edit_text(
             f"Вы выбрали {platform_name.capitalize()}! Теперь выберите тип бота 🤖:",
-            reply_markup=inline.platform_services_kb
+            reply_markup=inline.platform_services_kb,
         )
-        await state.set_state(UserState.bot_type)
         await callback.answer()
 
 
-# Выбор бота
+# Обработка ввода платформы (текст)
+@inlain_logic_router.message(UserState.platform, F.text)
+async def handle_platform_text(message: types.Message, state: FSMContext):
+    platform_name = message.text.strip()
+    await state.update_data(platform=platform_name)
+    await state.set_state(UserState.bot_type)
+
+    await message.answer(
+        f"Вы выбрали {platform_name.capitalize()}! Теперь выберите тип бота 🤖:",
+        reply_markup=inline.platform_services_kb,
+    )
+
+
+# Обработка выбора типа бота (кнопка)
 @inlain_logic_router.callback_query(F.data.startswith("service_"))
 async def handle_service_order(callback: types.CallbackQuery, state: FSMContext):
-    if not callback.data:
-        return
-
     bot_type = callback.data.split("_")[1]
     if isinstance(callback.message, types.Message):
-        await state.set_state(UserState.wishes)
         await state.update_data(bot_type=bot_type)
+        await state.set_state(UserState.wishes)
+
         await callback.message.edit_text(
             text.selling_text_7, reply_markup=inline.inline_back_selection_2
         )
         await callback.answer()
 
 
-# Пожелания
+# Обработка ввода типа бота (текст)
+@inlain_logic_router.message(UserState.bot_type, F.text)
+async def handle_service_text(message: types.Message, state: FSMContext):
+    bot_type = message.text.strip()
+    await state.update_data(bot_type=bot_type)
+    await state.set_state(UserState.wishes)
+
+    await message.answer(
+        text.selling_text_7, reply_markup=inline.inline_back_selection_2
+    )
+
+
+# Обработка пожеланий (отправляет selling_text_9)
 @inlain_logic_router.message(UserState.wishes, F.text)
-async def save_wishes(message: types.Message, state: FSMContext):
+async def handle_save_wishes(message: types.Message, state: FSMContext):
     await state.update_data(wishes=message.text)
+    await state.set_state(UserState.functional)
+    await message.answer(text.selling_text_9)
+
+
+# Обработка функционала
+@inlain_logic_router.message(UserState.functional, F.text)
+async def handle_save_functional(message: types.Message, state: FSMContext):
+    await state.update_data(functional=message.text)
     await state.set_state(UserState.name)
-    await message.answer("Записал! Теперь введите ваше имя 📝:")
+    await message.answer("Отлично! Теперь введите ваше имя 📝:")
 
 
+# Обработка имени
 @inlain_logic_router.message(UserState.name, F.text)
 async def handle_save_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(UserState.contacts)
-    await message.answer(f"Спасибо, {message.text}! Теперь укажите ваш номер телефона и удобный способ связи (Telegram, WhatsApp) 📞:")
+    await message.answer(
+        f"Спасибо, {message.text}! Теперь укажите ваш номер телефона и удобный способ связи (Telegram, WhatsApp) 📞:"
+    )
 
 
+# Обработка контактов
 @inlain_logic_router.message(UserState.contacts, F.text)
 async def handle_save_contacts(message: types.Message, state: FSMContext):
     await state.update_data(contacts=message.text)
-    await state.set_state(UserState.contacts)
-    await message.answer("Отлично! Ваш заказ почти готов ✅. Нажмите 'Оформить заказ' для завершения! 🚀",
-                         reply_markup=inline.inline_back_selection)
+    await message.answer(
+        "Отлично! Ваш заказ почти готов ✅. Нажмите 'Оформить заказ' для завершения! 🚀",
+        reply_markup=inline.inline_back_selection,
+    )
 
 
 # # Хендлер для кнокпи "другие услуги" при выборе бота
@@ -109,7 +158,9 @@ async def handle_save_contacts(message: types.Message, state: FSMContext):
 
 
 @inlain_logic_router.callback_query(F.data == "arrange_order")
-async def confirm_order(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):
+async def confirm_order(
+    callback: types.CallbackQuery, state: FSMContext, session: AsyncSession
+):
     if isinstance(callback.message, types.Message):
         # Получаем все данные, которые пользователь вводил ранее
         data = await state.get_data()
@@ -120,12 +171,14 @@ async def confirm_order(callback: types.CallbackQuery, state: FSMContext, sessio
             platform=data.get("platform"),
             bot_type=data.get("bot_type"),
             wishes=data.get("wishes"),
-            contacts=data.get("contacts")
+            functional=data.get("functional"),
+            contacts=data.get("contacts"),
         )
 
         session.add(new_order)
         # Сохраняем данные в БД
         await session.commit()
+
         # Формируем текст уведомления
         order_info = (
             f"🛒 *Новый заказ!*\n"
@@ -133,6 +186,7 @@ async def confirm_order(callback: types.CallbackQuery, state: FSMContext, sessio
             f"💻 Платформа: {data.get('platform')}\n"
             f"🤖 Тип бота: {data.get('bot_type')}\n"
             f"📝 Пожелания: {data.get('wishes')}\n"
+            f"📝 Функционал: {data.get('functional')}\n"
             f"📞 Контакты: {data.get('contacts')}\n"
             f"🔗 ID пользователя: {callback.from_user.id}"
         )
@@ -140,54 +194,18 @@ async def confirm_order(callback: types.CallbackQuery, state: FSMContext, sessio
         # Отправляем заказ в группу
         GROUP_ID = -1002406768777
         if GROUP_ID:
-            await callback.bot.send_message(str(GROUP_ID), order_info, parse_mode="Markdown")
+            await callback.bot.send_message(
+                str(GROUP_ID), order_info, parse_mode="Markdown"
+            )
 
         # Отправляем пользователю подтверждение
-        await callback.message.edit_text("✅ Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.")
+        await callback.message.edit_text(
+            "✅ Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время."
+        )
 
         # Очищаем состояние, так как заказ уже оформлен
         await state.clear()
         await callback.answer()
-
-
-# # Хендлер оформления заказа
-# @inlain_logic_router.callback_query(F.data == "arrange_order")
-# async def confirm_order(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):
-#     if isinstance(callback.message, types.Message):
-#         # Получаем все данные, которые пользователь вводил ранее
-#         data = await state.get_data()
-#         # print("Данные заказа:", data)
-
-#         new_order = Order(
-#             user_id=callback.from_user.id,
-#             name=data.get("name"),
-#             platform=data.get("platform"),
-#             bot_type=data.get("bot_type"),
-#             wishes=data.get("wishes"),
-#             contacts=data.get("contacts")
-#         )
-
-#         session.add(new_order)
-#         # Сохраняем данные в БД
-#         await session.commit()
-
-#         # Отправляем уведомление админу
-#         if ADMIN_ID:
-#             order_info = (
-#                 f"🛒 *Новый заказ!*\n"
-#                 f"👤 Имя: {data.get('name')}\n"
-#                 f"💻 Платформа: {data.get('platform')}\n"
-#                 f"🤖 Тип бота: {data.get('bot_type')}\n"
-#                 f"📝 Пожелания: {data.get('wishes')}\n"
-#                 f"📞 Контакты: {data.get('contacts')}\n"
-#                 f"🔗 ID пользователя: {callback.from_user.id}"
-#             )
-#             await callback.bot.send_message(str(ADMIN_ID), order_info, parse_mode="Markdown")
-#         await callback.message.edit_text("Ваш заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.")
-
-#         # Очищаем состояние, так как заказ уже оформлен
-#         await state.clear()
-#         await callback.answer()
 
 
 # Обработчик кнопки "Далее"
@@ -197,6 +215,18 @@ async def handle_next_order(callback: types.CallbackQuery, state: FSMContext):
         await state.set_state(UserState.name)
         await callback.message.edit_text("Записал! Теперь введите ваше имя 📝:")
         await callback.answer()
+
+
+# @inlain_logic_router.callback_query(F.data.startswith("send_messag_2"))
+# async def handle_send_message(callback: types.CallbackQuery, state: FSMContext):
+#     if not callback.data:
+#         return
+
+#     if isinstance(callback.message, types.Message):
+#         await state.set_state(UserState.name)
+#         await state.update_data(UserState.wishes)
+#         await callback.message.edit_text("Теперь выберите тип бота 🤖:",
+#                                          reply_markup=inline.platform_services_kb)
 
 
 # # Хендлер для кнокпи "другие услуги" при выборе бота
@@ -323,9 +353,10 @@ async def handle_back_4(callback: CallbackQuery):
 @inlain_logic_router.callback_query(F.data == "back_main_menu_inline")
 async def handle_back_main_menu(callback: CallbackQuery):
     if isinstance(callback.message, Message):
-        await callback.message.answer("📌 Вы уже в главном меню. Выберите пункт ниже:",
-                                      reply_markup=inline.inline_keyboard_main
-                                      )
+        await callback.message.answer(
+            "📌 Вы уже в главном меню. Выберите пункт ниже:",
+            reply_markup=inline.inline_keyboard_main,
+        )
 
 
 # inline меню для кнопки "Назад в главное меню"
@@ -334,7 +365,9 @@ async def handle_back_main_menu(callback: CallbackQuery):
 async def back_to_main_inlain(callback: types.CallbackQuery):
     if isinstance(callback.message, types.Message):
         photo = FSInputFile("images/reply.webp")
-        await callback.message.answer(text.selling_text_4, reply_markup=reply.submenu_markup)
+        await callback.message.answer(
+            text.selling_text_4, reply_markup=reply.submenu_markup
+        )
         await callback.message.answer_photo(photo)
         await callback.answer()
         # # Редактируем inline-клавиатуру

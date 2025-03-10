@@ -12,6 +12,10 @@ class ServiceCallback(CallbackData, prefix="service"):
     name: str  # vizitka, quiz, catalog, webinar, other
 
 
+class PriceCallback(CallbackData, prefix="price"):
+    name: str  # vizitka, quiz, catalog, webinar, other
+
+
 class selectionCallback(CallbackData, prefix="arrange"):
     name: str
 
@@ -63,10 +67,44 @@ platform_services_kb = InlineKeyboardMarkup(
                 text="Автовебинарный бот", callback_data="service_webinar"
             )
         ],
-        [InlineKeyboardButton(text="Другие услуги", callback_data="text_service_other")],
         [
             InlineKeyboardButton(
                 text="🔙 Назад к выбору платформы", callback_data="back_to_platforms"
+            )
+        ],
+    ]
+)
+
+platform_services_price_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="📇 Чат-бот Визитка", callback_data="price_vizitka")],
+        [
+            InlineKeyboardButton(
+                text="❓ Квиз-бот (Опросник, Тест, Игра)", callback_data="price_quiz"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📦 Товарный Бот (Каталог)", callback_data="price_catalog"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🎥 Автовебинарный Бот", callback_data="price_webinar"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🛒 Чат-бот Магазин", callback_data="price_shop"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🔧 Другие услуги:", callback_data="price_other")
+        ],
+        [
+            InlineKeyboardButton(
+                text="🔙 Назад к началу", callback_data="back_main_inlain"
             )
         ],
     ]
@@ -128,7 +166,7 @@ inline_options = InlineKeyboardMarkup(
 
 inline_keyboard_back_main_menu = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Назад в главное меню", callback_data="back_main_menu_inline")],
+        [InlineKeyboardButton(text="Назад в главное меню", callback_data="back_main_price_inline")],
     ],
 )
 

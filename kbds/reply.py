@@ -22,14 +22,16 @@ ADMIN_KB = ReplyKeyboardMarkup(
 submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Варианты меню"),
+            KeyboardButton(text="Оплата"),
+            KeyboardButton(text="Стоимость"),
             KeyboardButton(text="Отзывы"),
         ],
         [
-            KeyboardButton(text="Оплата и процесс работы"),
-            KeyboardButton(text="Стоимость"),
+            KeyboardButton(text="Варианты меню"),
+            KeyboardButton(text="Кейсы"),
         ],
         [
+
             KeyboardButton(text="Заказать разработку бота"),
         ],
     ],

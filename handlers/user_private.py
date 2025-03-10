@@ -1,15 +1,15 @@
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart, Command, or_f
+from handlers.inlain_logic import UserState
+from aiogram.fsm.context import FSMContext
 from aiogram.types import FSInputFile, Message
-from text_message import text
+from filters.chat_types import ChatTypeFilter
 
 # Импорт Bold для того что бы сделать шрифт жирным
 from aiogram.utils.formatting import Bold
 
-# Импорты 2 штуки из файла handler_logic.py
-# from kbds.inline import platform_kb
-from filters.chat_types import ChatTypeFilter
-
+# Кастомные
+from text_message import text
 from kbds import inline, reply
 
 
@@ -65,7 +65,17 @@ async def payment_cmd(message: types.Message):
 
 @user_private_router.message(F.text.casefold() == "стоимость")
 async def cost_cmd(message: types.Message):
-    await message.answer(text.selling_text_3, reply_markup=reply.back_markup)
+    texts = Bold("Выберите интересующего вас бота и узнайте стоимость")
+    await message.answer(
+        texts.as_html(), parse_mode="HTML",
+        reply_markup=inline.platform_services_price_kb)
+
+
+@user_private_router.message(F.text.casefold() == "заказать разработку бота")
+async def about_cmd(message: types.Message, state: FSMContext):
+    await state.set_state(UserState.platform)
+    # await message.answer(text.selling_text, reply_markup=reply.reply_markup)
+    await message.answer(text.selling_text_8, reply_markup=inline.platform_kb)
 
 
 # __________________3 меню, с оформлением__________________

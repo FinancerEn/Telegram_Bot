@@ -1,6 +1,6 @@
 # Файл с хендлерами кнопки "заказать разработку"
-from aiogram import F, types, Router
-from text_message import text
+# from aiogram import F, types, Router
+# from text_message import text
 
 # # Импорты 2 штуки из файла handler_logic.py
 # # from kbds.inline import platform_kb
@@ -14,26 +14,19 @@ from text_message import text
 #     selling_text_6,
 # )
 
-from handlers.inlain_logic import UserState
-from aiogram.fsm.context import FSMContext
-from filters.chat_types import ChatTypeFilter
+# from handlers.inlain_logic import UserState
+# from aiogram.fsm.context import FSMContext
+# from filters.chat_types import ChatTypeFilter
 # from text_message import text
 
-from kbds import inline, reply
+# from kbds import inline, reply
 
 
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
-handler_logic_router = Router()
+# handler_logic_router = Router()
 # Наш кастомный фильтр. Если стоит private это значит функционал этого файла
 # используется только в чатах. Если gropup то в группах или оба сразу.
-handler_logic_router.message.filter(ChatTypeFilter(["private"]))
-
-
-@handler_logic_router.message(F.text.casefold() == "заказать разработку бота")
-async def about_cmd(message: types.Message, state: FSMContext):
-    await state.set_state(UserState.platform)
-    # await message.answer(text.selling_text, reply_markup=reply.reply_markup)
-    await message.answer(text.selling_text_8, reply_markup=inline.platform_kb)
+# handler_logic_router.message.filter(ChatTypeFilter(["private"]))
 
 
 # # ______________________Начало второго меню_______________________

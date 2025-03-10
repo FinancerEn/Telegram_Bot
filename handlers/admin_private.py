@@ -96,7 +96,7 @@ async def set_budget(message: types.Message, state: FSMContext):
 @admin_router.message(OrderState.contact_info, F.text)
 async def set_contact_info(message: types.Message, state: FSMContext, session: AsyncSession):
     data = await state.get_data()  # Получаем данные из FSM
-    print(data)
+    # print(data)
     new_product = Product(
         name=data.get('client_name', 'Без названия'),
         description=data.get('bot_purpose'),

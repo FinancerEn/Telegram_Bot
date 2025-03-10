@@ -1,4 +1,6 @@
 # callback-хендлеры. Обработка логики inlain кнопок.
+import os
+from typing import Optional
 from aiogram import types, Router, F
 from filters.chat_types import ChatTypeFilter
 from aiogram.types import FSInputFile, CallbackQuery, Message
@@ -18,7 +20,8 @@ from kbds import inline, reply
 
 load_dotenv()
 
-
+GROUP_ID_ENV = os.getenv("GROUP_ID")
+GROUP_ID: Optional[int] = int(GROUP_ID_ENV) if GROUP_ID_ENV and GROUP_ID_ENV.isdigit() else None
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
 inlain_logic_router = Router()
 # Наш кастомный фильтр. Если стоит private это значит функционал этого файла
@@ -59,6 +62,7 @@ async def handle_platform_callback(callback: types.CallbackQuery, state: FSMCont
         # Переводит пользователя в состояние выбора типа бота.
         await state.set_state(UserState.bot_type)
 
+    if isinstance(callback.message, types.Message):
         await callback.message.edit_text(
             f"Вы выбрали {platform_name.capitalize()}! Теперь выберите тип бота 🤖:",
             reply_markup=inline.platform_services_kb,
@@ -69,7 +73,7 @@ async def handle_platform_callback(callback: types.CallbackQuery, state: FSMCont
 # Обработка ввода платформы (текст)
 @inlain_logic_router.message(UserState.platform, F.text)
 async def handle_platform_text(message: types.Message, state: FSMContext):
-    platform_name = message.text.strip()
+    platform_name = message.text.strip() if message.text else ""
     await state.update_data(platform=platform_name)
     await state.set_state(UserState.bot_type)
 
@@ -82,6 +86,9 @@ async def handle_platform_text(message: types.Message, state: FSMContext):
 # Обработка выбора типа бота (кнопка)
 @inlain_logic_router.callback_query(F.data.startswith("service_"))
 async def handle_service_order(callback: types.CallbackQuery, state: FSMContext):
+    if not callback.data:
+        return
+
     bot_type = callback.data.split("_")[1]
     if isinstance(callback.message, types.Message):
         await state.update_data(bot_type=bot_type)
@@ -96,7 +103,7 @@ async def handle_service_order(callback: types.CallbackQuery, state: FSMContext)
 # Обработка ввода типа бота (текст)
 @inlain_logic_router.message(UserState.bot_type, F.text)
 async def handle_service_text(message: types.Message, state: FSMContext):
-    bot_type = message.text.strip()
+    bot_type = message.text.strip() if message.text else ""
     await state.update_data(bot_type=bot_type)
     await state.set_state(UserState.wishes)
 
@@ -190,13 +197,10 @@ async def confirm_order(
             f"📞 Контакты: {data.get('contacts')}\n"
             f"🔗 ID пользователя: {callback.from_user.id}"
         )
-
+        print(f"GROUP_ID_ENV = {GROUP_ID_ENV}")
         # Отправляем заказ в группу
-        GROUP_ID = -1002406768777
-        if GROUP_ID:
-            await callback.bot.send_message(
-                str(GROUP_ID), order_info, parse_mode="Markdown"
-            )
+        if GROUP_ID_ENV and callback.bot:
+            await callback.bot.send_message(GROUP_ID_ENV, order_info, parse_mode="Markdown")
 
         # Отправляем пользователю подтверждение
         await callback.message.edit_text(
@@ -215,28 +219,6 @@ async def handle_next_order(callback: types.CallbackQuery, state: FSMContext):
         await state.set_state(UserState.name)
         await callback.message.edit_text("Записал! Теперь введите ваше имя 📝:")
         await callback.answer()
-
-
-# @inlain_logic_router.callback_query(F.data.startswith("send_messag_2"))
-# async def handle_send_message(callback: types.CallbackQuery, state: FSMContext):
-#     if not callback.data:
-#         return
-
-#     if isinstance(callback.message, types.Message):
-#         await state.set_state(UserState.name)
-#         await state.update_data(UserState.wishes)
-#         await callback.message.edit_text("Теперь выберите тип бота 🤖:",
-#                                          reply_markup=inline.platform_services_kb)
-
-
-# # Хендлер для кнокпи "другие услуги" при выборе бота
-# @inlain_logic_router.callback_query(F.data.startswith("text_service_other"))
-# async def handle_text_service_order(callback: types.CallbackQuery, state: FSMContext):
-#     if isinstance(callback.message, types.Message):
-#         await callback.message.edit_text(
-#             text.selling_text_2, reply_markup=inline.inline_back_selection
-#         )
-#     await callback.answer()
 
 
 # _____________________________варианты меню_________________________________
@@ -350,17 +332,17 @@ async def handle_back_4(callback: CallbackQuery):
         )
 
 
-@inlain_logic_router.callback_query(F.data == "back_main_menu_inline")
+@inlain_logic_router.callback_query(F.data == "back_main_price_inline")
 async def handle_back_main_menu(callback: CallbackQuery):
     if isinstance(callback.message, Message):
         await callback.message.answer(
             "📌 Вы уже в главном меню. Выберите пункт ниже:",
-            reply_markup=inline.inline_keyboard_main,
+            reply_markup=inline.platform_services_price_kb,
         )
 
 
 # inline меню для кнопки "Назад в главное меню"
-# Работает для так же для reply, дублирует её.
+# Работает так же для reply, дублирует её.
 @inlain_logic_router.callback_query(F.data == "back_main_inlain")
 async def back_to_main_inlain(callback: types.CallbackQuery):
     if isinstance(callback.message, types.Message):

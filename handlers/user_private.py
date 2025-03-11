@@ -45,8 +45,14 @@ async def menu_cmd(message: types.Message):
     )
 
 
+@user_private_router.message(F.text.casefold() == "кейсы")
+async def cases_other_reply(message: types.Message):
+    await message.answer("Примеры кейсов", reply_markup=reply.back_markup)
+    await message.answer(text.cases_text, reply_markup=inline.platform_cases_kb)
+
+
 @user_private_router.message(F.text.casefold() == "отзывы")
-async def reviews(message: types.Message):
+async def reviews_reply(message: types.Message):
     texts = Bold("Отзывы наших клиентов 😊")  # Делаем текст жирным
     await message.answer(
         texts.as_html(), parse_mode="HTML", reply_markup=reply.back_markup
@@ -58,12 +64,12 @@ async def reviews(message: types.Message):
     await message.answer_photo(photo_2)
 
 
-@user_private_router.message(F.text.casefold() == "оплата и процесс работы")
+@user_private_router.message(F.text.casefold() == "оплата")
 async def payment_cmd(message: types.Message):
-    await message.answer(text.payment_text_work, reply_markup=inline.inline_back_selection)
+    await message.answer(text.payment_options_text, reply_markup=reply.submenu_markup)
 
 
-@user_private_router.message(F.text.casefold() == "стоимость")
+@user_private_router.message(F.text.casefold() == "какие бывают боты, стоимость")
 async def cost_cmd(message: types.Message):
     texts = Bold("Выберите интересующего вас бота и узнайте стоимость")
     await message.answer(
@@ -83,6 +89,32 @@ async def about_cmd(message: types.Message, state: FSMContext):
 async def handle_back_2(message: types.Message):
     await message.answer("Вы уже в главном меню", reply_markup=reply.submenu_markup)
 
+
+# Кнопка назад на предыдущее состояние
+@user_private_router.message(lambda message: message.text.lower() == "на шаг назад")
+async def back_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+
+    if current_state:
+        # Получаем историю состояний
+        state_data = await state.get_data()
+        prev_state = state_data.get("prev_state")  # Проверяем, есть ли предыдущее состояние
+
+        if prev_state:
+            await state.set_state(prev_state)  # Возвращаемся в предыдущее состояние
+            await message.answer("Вы вернулись назад.")
+        else:
+            await state.clear()  # Если предыдущего состояния нет, очищаем FSM
+            await message.answer("Вы вышли в главное меню.", reply_markup=reply.submenu_markup)
+    else:
+        await message.answer("Вы уже в главном меню.", reply_markup=reply.submenu_markup)
+
+
+# Отменить заказ
+@user_private_router.message(F.text.casefold() == "❌ Отменить заказ")
+async def exit_order_process(message: types.Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Вы вышли из оформления заказа. Чем могу помочь?", reply_markup=reply.submenu_markup)
 
 # # Генерируем ответ на определённые ключевые слова
 # # @user_private_router.message(lambda message: message.content_type == types.ContentType.TEXT)

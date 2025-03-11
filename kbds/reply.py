@@ -23,12 +23,14 @@ submenu_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="Оплата"),
-            KeyboardButton(text="Стоимость"),
             KeyboardButton(text="Отзывы"),
         ],
         [
             KeyboardButton(text="Варианты меню"),
             KeyboardButton(text="Кейсы"),
+        ],
+        [
+            KeyboardButton(text="Какие бывают боты, стоимость"),
         ],
         [
 
@@ -87,7 +89,7 @@ reply_markup_2 = ReplyKeyboardMarkup(
 back_markup = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Оформить заказ"),
+            KeyboardButton(text="Заказать разработку бота"),
         ],
         [
             KeyboardButton(text="Назад"),
@@ -161,6 +163,21 @@ last_markup = ReplyKeyboardMarkup(
     resize_keyboard=True,
 )
 
+exit_button_reply = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="❌ Отменить заказ")],
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True
+)
+
+step_back_reply = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="На шаг назад")],
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True
+)
 
 # start_kbd2 = ReplyKeyboardBuilder
 # start_kbd2.add(

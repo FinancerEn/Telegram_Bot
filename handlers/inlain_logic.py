@@ -4,6 +4,7 @@ from typing import Optional
 from aiogram import types, Router, F
 from filters.chat_types import ChatTypeFilter
 from aiogram.types import FSInputFile, CallbackQuery, Message
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # импорт для машины состояний
 from aiogram.fsm.state import State, StatesGroup
@@ -14,6 +15,10 @@ from database.models import Order
 # импорт админа
 from dotenv import load_dotenv
 
+# Импорт Bold для того что бы сделать шрифт жирным
+from aiogram.utils.formatting import Bold
+from aiogram.utils.markdown import bold
+
 # Кастомные импорты
 from text_message import text
 from kbds import inline, reply
@@ -21,7 +26,9 @@ from kbds import inline, reply
 load_dotenv()
 
 GROUP_ID_ENV = os.getenv("GROUP_ID")
-GROUP_ID: Optional[int] = int(GROUP_ID_ENV) if GROUP_ID_ENV and GROUP_ID_ENV.isdigit() else None
+GROUP_ID: Optional[int] = (
+    int(GROUP_ID_ENV) if GROUP_ID_ENV and GROUP_ID_ENV.isdigit() else None
+)
 # Помещаем этот файл в переменную для возможности импорта в основной файл.
 inlain_logic_router = Router()
 # Наш кастомный фильтр. Если стоит private это значит функционал этого файла
@@ -125,26 +132,45 @@ async def handle_save_wishes(message: types.Message, state: FSMContext):
 async def handle_save_functional(message: types.Message, state: FSMContext):
     await state.update_data(functional=message.text)
     await state.set_state(UserState.name)
-    await message.answer("Отлично! Теперь введите ваше имя 📝:")
+    await message.answer(
+        "Отлично! Теперь введите ваше имя 📝:", reply_markup=inline.back_platform
+    )
+
+
+@inlain_logic_router.callback_query(F.data == "next_order")
+async def handle_next_order(callback: types.CallbackQuery, state: FSMContext):
+    texts = Bold("🔹 Записал! Теперь введите ваше имя 📝: 🔹")
+    if isinstance(callback.message, types.Message):
+        await state.set_state(UserState.name)
+        await callback.message.edit_text(
+            texts.as_html(), parse_mode="HTML", reply_markup=inline.back_platform
+        )
+        await callback.answer()
 
 
 # Обработка имени
 @inlain_logic_router.message(UserState.name, F.text)
 async def handle_save_name(message: types.Message, state: FSMContext):
+    text = (
+        f"🔹 {bold('Спасибо')}, {bold(message.text)}! 🔹\n\n"
+        "📞 Теперь укажите ваш номер телефона и удобный способ связи "
+        "(Telegram, WhatsApp):"
+    )
+
     await state.update_data(name=message.text)
     await state.set_state(UserState.contacts)
-    await message.answer(
-        f"Спасибо, {message.text}! Теперь укажите ваш номер телефона и удобный способ связи (Telegram, WhatsApp) 📞:"
-    )
+    await message.answer(text, parse_mode="HTML", reply_markup=inline.back_platform)
 
 
 # Обработка контактов
 @inlain_logic_router.message(UserState.contacts, F.text)
 async def handle_save_contacts(message: types.Message, state: FSMContext):
+    texts = Bold(
+        "Отлично! Ваш заказ почти готов ✅. Нажмите 'Оформить заказ' для завершения! 🚀",
+    )
     await state.update_data(contacts=message.text)
     await message.answer(
-        "Отлично! Ваш заказ почти готов ✅. Нажмите 'Оформить заказ' для завершения! 🚀",
-        reply_markup=inline.inline_back_selection,
+        texts.as_html(), parse_mode="HTML", reply_markup=inline.inline_back_selection
     )
 
 
@@ -200,7 +226,9 @@ async def confirm_order(
         print(f"GROUP_ID_ENV = {GROUP_ID_ENV}")
         # Отправляем заказ в группу
         if GROUP_ID_ENV and callback.bot:
-            await callback.bot.send_message(GROUP_ID_ENV, order_info, parse_mode="Markdown")
+            await callback.bot.send_message(
+                GROUP_ID_ENV, order_info, parse_mode="Markdown"
+            )
 
         # Отправляем пользователю подтверждение
         await callback.message.edit_text(
@@ -209,15 +237,6 @@ async def confirm_order(
 
         # Очищаем состояние, так как заказ уже оформлен
         await state.clear()
-        await callback.answer()
-
-
-# Обработчик кнопки "Далее"
-@inlain_logic_router.callback_query(F.data == "next_order")
-async def handle_next_order(callback: types.CallbackQuery, state: FSMContext):
-    if isinstance(callback.message, types.Message):
-        await state.set_state(UserState.name)
-        await callback.message.edit_text("Записал! Теперь введите ваше имя 📝:")
         await callback.answer()
 
 
@@ -266,15 +285,23 @@ async def send_link(callback: CallbackQuery):
         return
 
     group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-    message_text = f"{text.sample_url_text}\n\n🔗 [Перейти в группу]({group_link})"
+    message_text = f"{text.sample_url_text}"
+
+    # Создаём inline-кнопку со ссылкой
+    link_button = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🔗 Перейти в группу", url=group_link)],
+            [InlineKeyboardButton(text="⬅ Назад к примерам", callback_data="back_menu")],
+        ]
+    )
 
     await callback.message.answer(
         message_text,
         parse_mode="Markdown",
         disable_web_page_preview=True,
-        reply_markup=inline.inline_back_1,  # Вот здесь теперь передаём клавиатуру
+        reply_markup=link_button,  # Здесь передаём новую клавиатуру с кнопкой-ссылкой
     )
-    await callback.answer()  # Просто закрываем "часики"
+    await callback.answer()  # Закрываем "часики"
 
 
 # Варианты меню:
@@ -300,15 +327,15 @@ async def handle_sample_image(callback: CallbackQuery):
         await callback.answer()
 
 
-# Варианты меню. Пример картинки.
-@inlain_logic_router.callback_query(F.data == "other_menu")
-async def handle_sample_menu(callback: CallbackQuery):
-    if isinstance(callback.message, Message):
-        await callback.message.answer(
-            "Посмотрет какие бывают меню 🧐 И выберите любое для проверки",
-            reply_markup=inline.inline_menu_options,
-        )
-        await callback.answer()
+# # Варианты меню. Пример меню.
+# @inlain_logic_router.callback_query(F.data == "other_menu")
+# async def handle_sample_menu(callback: CallbackQuery):
+#     if isinstance(callback.message, Message):
+#         await callback.message.answer(
+#             "Посмотрет какие бывают меню 🧐 И выберите любое для проверки",
+#             reply_markup=inline.inline_menu_options,
+#         )
+#         await callback.answer()
 
 
 # Кнопки НАЗАД
@@ -344,7 +371,9 @@ async def handle_back_main_menu(callback: CallbackQuery):
 # inline меню для кнопки "Назад в главное меню"
 # Работает так же для reply, дублирует её.
 @inlain_logic_router.callback_query(F.data == "back_main_inlain")
-async def back_to_main_inlain(callback: types.CallbackQuery):
+async def back_to_main_inlain(callback: types.CallbackQuery, state: FSMContext):
+    await state.set_state(None)  # Переводит состояние FSM в None
+    await state.update_data({})  # Удаляет сохранённые данные FSM
     if isinstance(callback.message, types.Message):
         photo = FSInputFile("images/reply.webp")
         await callback.message.answer(
@@ -359,6 +388,19 @@ async def back_to_main_inlain(callback: types.CallbackQuery):
         # )
 
 
+@inlain_logic_router.callback_query(F.data == "cancel_order")
+async def cancel_back_to_main_inlain(callback: types.CallbackQuery, state: FSMContext):
+    await state.set_state(None)  # Переводит состояние FSM в None
+    await state.update_data({})  # Удаляет сохранённые данные FSM
+    if isinstance(callback.message, types.Message):
+        photo = FSInputFile("images/reply.webp")
+        await callback.message.answer(
+            text.selling_text_4, reply_markup=reply.submenu_markup
+        )
+        await callback.message.answer_photo(photo)
+        await callback.answer()
+
+
 # Хендлер для inline кнопки "Назад к выбору платформы"
 @inlain_logic_router.callback_query(F.data.in_(["arrange_back", "back_to_platforms"]))
 async def back_to_platforms(callback: types.CallbackQuery):
@@ -367,6 +409,24 @@ async def back_to_platforms(callback: types.CallbackQuery):
             "Выберите платформу:", reply_markup=inline.platform_kb
         )
     await callback.answer()
+
+
+@inlain_logic_router.callback_query(F.data == "cancel_order")
+async def exit_order_process_inline(callback: types.CallbackQuery, state: FSMContext):
+    await state.clear()
+    await callback.answer(
+        "Вы вышли из оформления заказа. Чем могу помочь?",
+        reply_markup=reply.submenu_markup,
+    )
+
+
+@inlain_logic_router.callback_query(F.data == "back_list_bots")
+async def back_list_bots_inline(callback: CallbackQuery):
+    if isinstance(callback.message, Message):
+        await callback.message.answer("Примеры кейсов", reply_markup=reply.back_markup)
+        await callback.message.answer(
+            text.cases_text, reply_markup=inline.platform_cases_kb
+        )
 
 
 # # ____________________Обработка действий главного меню___________________________
@@ -405,3 +465,6 @@ async def back_to_platforms(callback: types.CallbackQuery):
 # async def inline_main_menu_cost(callback: types.CallbackQuery):
 #     if isinstance(callback.message, types.Message):
 #         await callback.message.answer(text.selling_text_3, reply_markup=inline.inline_keyboard_back_main_menu)
+
+
+#

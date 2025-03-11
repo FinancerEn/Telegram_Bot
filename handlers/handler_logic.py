@@ -8,7 +8,7 @@
 # from text_message.text import (
 #     business_card_text,
 #     questionnaire_text,
-#     commodity_text,
+#     catalog_text,
 #     webinar_text,
 #     other_text,
 #     selling_text_6,
@@ -79,7 +79,7 @@
 
 # @handler_logic_router.message(F.text.casefold() == "товарный бот - бот каталог")
 # async def handle_commodity(message: types.Message):
-#     await message.answer(commodity_text, reply_markup=reply.back_selection)
+#     await message.answer(catalog_text, reply_markup=reply.back_selection)
 #     await message.answer("Оформить заказ", reply_markup=inline.inline_back_selection)
 
 

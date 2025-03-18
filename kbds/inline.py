@@ -257,7 +257,7 @@ exit_button_inline = InlineKeyboardMarkup(
     ],
 )
 
-back_platform = InlineKeyboardMarkup(
+back_platform_1 = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(

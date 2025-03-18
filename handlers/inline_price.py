@@ -1,7 +1,7 @@
 # Файл кнопки стоимость
-from aiogram import types, Router, F
+from aiogram import Router, F
 from filters.chat_types import ChatTypeFilter
-from aiogram.types import FSInputFile
+from aiogram.types import FSInputFile, CallbackQuery
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Кастомные импорты
@@ -12,8 +12,8 @@ inlain_price_router = Router()
 inlain_price_router.message.filter(ChatTypeFilter(["private"]))
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_vizitka"))
-async def handle_price_vizitka(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_vizitka")
+async def handle_price_vizitka(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -26,8 +26,8 @@ async def handle_price_vizitka(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_quiz"))
-async def handle_price_quiz(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_quiz")
+async def handle_price_quiz(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -40,8 +40,8 @@ async def handle_price_quiz(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_catalog"))
-async def handle_price_catalog(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_catalog")
+async def handle_price_catalog(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -54,8 +54,8 @@ async def handle_price_catalog(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_webinar"))
-async def handle_price_webinar(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_webinar")
+async def handle_price_webinar(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -68,8 +68,8 @@ async def handle_price_webinar(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_shop"))
-async def handle_price_shop(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_shop")
+async def handle_price_shop(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -82,8 +82,8 @@ async def handle_price_shop(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_record_bott"))
-async def handle_record_bott(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_record_bott")
+async def handle_record_bott(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -96,8 +96,8 @@ async def handle_record_bott(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_hr_bott"))
-async def handle_hr_bott(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_hr_bott")
+async def handle_hr_bott(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -110,8 +110,8 @@ async def handle_hr_bott(callback: types.CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("price_other"))
-async def handle_price_other(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "price_other")
+async def handle_price_other(callback: CallbackQuery):
     if callback.message:
         photo = FSInputFile("images/start_image_2.webp")
         await callback.message.answer_photo(
@@ -125,8 +125,8 @@ async def handle_price_other(callback: types.CallbackQuery):
 
 
 # _________________________Хендлеры кнокпи "Кейсы"__________________________
-@inlain_price_router.callback_query(F.data.startswith("cases_vizitka"))
-async def cases_vizitka_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_vizitka")
+async def cases_vizitka_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -151,8 +151,8 @@ async def cases_vizitka_link(callback: types.CallbackQuery):
     await callback.answer()  # Просто закрываем "часики"
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_quiz"))
-async def cases_quiz_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_quiz")
+async def cases_quiz_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -175,8 +175,8 @@ async def cases_quiz_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_catalog"))
-async def cases_catalog_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_catalog")
+async def cases_catalog_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -198,8 +198,8 @@ async def cases_catalog_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_webinar"))
-async def cases_webinar_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_webinar")
+async def cases_webinar_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -222,8 +222,8 @@ async def cases_webinar_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_shop"))
-async def cases_shop_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_shop")
+async def cases_shop_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -246,8 +246,8 @@ async def cases_shop_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_record_bott"))
-async def cases_record_bott_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_record_bott")
+async def cases_record_bott_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -270,8 +270,8 @@ async def cases_record_bott_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_hr_bott"))
-async def cases_hr_bott_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_hr_bott")
+async def cases_hr_bott_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
@@ -294,8 +294,8 @@ async def cases_hr_bott_link(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data.startswith("cases_other"))
-async def cases_other_link(callback: types.CallbackQuery):
+@inlain_price_router.callback_query(F.data == "cases_other")
+async def cases_other_link(callback: CallbackQuery):
     if callback.message is None:
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return

@@ -1,4 +1,4 @@
-from aiogram import F, types, Router
+from aiogram import F, Router
 from aiogram.filters import CommandStart, Command, or_f
 from handlers.inlain_logic import UserState
 from aiogram.fsm.context import FSMContext
@@ -36,7 +36,7 @@ async def start_cmd(message: Message):
 
 
 @user_private_router.message(or_f(Command("menu"), F.text.lower() == "варианты меню"))
-async def menu_cmd(message: types.Message):
+async def menu_cmd(message: Message):
     photo = FSInputFile("images/start_image_2.webp")
     await message.answer_photo(
         photo,
@@ -46,13 +46,13 @@ async def menu_cmd(message: types.Message):
 
 
 @user_private_router.message(F.text.casefold() == "кейсы")
-async def cases_other_reply(message: types.Message):
+async def cases_other_reply(message: Message):
     await message.answer("Примеры кейсов", reply_markup=reply.back_markup)
     await message.answer(text.cases_text, reply_markup=inline.platform_cases_kb)
 
 
 @user_private_router.message(F.text.casefold() == "отзывы")
-async def reviews_reply(message: types.Message):
+async def reviews_reply(message: Message):
     texts = Bold("Отзывы наших клиентов 😊")  # Делаем текст жирным
     await message.answer(
         texts.as_html(), parse_mode="HTML", reply_markup=reply.back_markup
@@ -65,12 +65,12 @@ async def reviews_reply(message: types.Message):
 
 
 @user_private_router.message(F.text.casefold() == "оплата")
-async def payment_cmd(message: types.Message):
+async def payment_cmd(message: Message):
     await message.answer(text.payment_options_text, reply_markup=reply.submenu_markup)
 
 
 @user_private_router.message(F.text.casefold() == "какие бывают боты, стоимость")
-async def cost_cmd(message: types.Message):
+async def cost_cmd(message: Message):
     texts = Bold("Выберите интересующего вас бота и узнайте стоимость")
     await message.answer(
         texts.as_html(), parse_mode="HTML",
@@ -78,7 +78,7 @@ async def cost_cmd(message: types.Message):
 
 
 @user_private_router.message(F.text.casefold() == "заказать разработку бота")
-async def about_cmd(message: types.Message, state: FSMContext):
+async def about_cmd(message: Message, state: FSMContext):
     await state.set_state(UserState.platform)
     # await message.answer(text.selling_text, reply_markup=reply.reply_markup)
     await message.answer(text.selling_text_8, reply_markup=inline.platform_kb)
@@ -86,13 +86,13 @@ async def about_cmd(message: types.Message, state: FSMContext):
 
 # __________________3 меню, с оформлением__________________
 @user_private_router.message(F.text.casefold() == "назад")
-async def handle_back_2(message: types.Message):
+async def handle_back_2(message: Message):
     await message.answer("Вы уже в главном меню", reply_markup=reply.submenu_markup)
 
 
 # Кнопка назад на предыдущее состояние
 @user_private_router.message(lambda message: message.text.lower() == "на шаг назад")
-async def back_handler(message: types.Message, state: FSMContext):
+async def back_handler(message: Message, state: FSMContext):
     current_state = await state.get_state()
 
     if current_state:
@@ -112,13 +112,13 @@ async def back_handler(message: types.Message, state: FSMContext):
 
 # Отменить заказ
 @user_private_router.message(F.text.casefold() == "❌ Отменить заказ")
-async def exit_order_process(message: types.Message, state: FSMContext):
+async def exit_order_process(message: Message, state: FSMContext):
     await state.clear()
     await message.answer("Вы вышли из оформления заказа. Чем могу помочь?", reply_markup=reply.submenu_markup)
 
 # # Генерируем ответ на определённые ключевые слова
 # # @user_private_router.message(lambda message: message.content_type == types.ContentType.TEXT)
-# # async def echo(message: types.Message):
+# # async def echo(message: Message):
 # #     text = message.text
 
 # #     if text:  # Проверяем, что text не None

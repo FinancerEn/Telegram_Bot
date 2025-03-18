@@ -5,8 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from database.models import Base
 
 
-# Получаем URL из .env
+# # Получаем URL БД sqlite из .env
+# db_url = os.getenv("DB_URL_SQLITE")
+
+# Получаем URL БД postgres из .env
 db_url = os.getenv("DB_URL")
+
+# print(f"DB_URL загружен: {db_url}")
 
 # Проверяем, что URL не пустой
 if not db_url:

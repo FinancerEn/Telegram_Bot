@@ -68,32 +68,32 @@ async def handle_price_webinar(callback: CallbackQuery):
         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data == "price_shop")
-async def handle_price_shop(callback: CallbackQuery):
-    if callback.message:
-        photo = FSInputFile("images/start_image_2.webp")
-        await callback.message.answer_photo(
-            photo, text.shopbot_text, reply_markup=reply.submenu_markup
-        )
-        await callback.message.answer(
-            "⏮️ Нажмите если нужно вернуться назад к списку ботов",
-            reply_markup=inline.inline_keyboard_back_main_menu,
-        )
-        await callback.answer()
+# @inlain_price_router.callback_query(F.data == "price_shop")
+# async def handle_price_shop(callback: CallbackQuery):
+#     if callback.message:
+#         photo = FSInputFile("images/start_image_2.webp")
+#         await callback.message.answer_photo(
+#             photo, text.shopbot_text, reply_markup=reply.submenu_markup
+#         )
+#         await callback.message.answer(
+#             "⏮️ Нажмите если нужно вернуться назад к списку ботов",
+#             reply_markup=inline.inline_keyboard_back_main_menu,
+#         )
+#         await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data == "price_record_bott")
-async def handle_record_bott(callback: CallbackQuery):
-    if callback.message:
-        photo = FSInputFile("images/start_image_2.webp")
-        await callback.message.answer_photo(
-            photo, text.popular_types_text, reply_markup=reply.submenu_markup
-        )
-        await callback.message.answer(
-            "⏮️ Нажмите если нужно вернуться назад к списку ботов",
-            reply_markup=inline.inline_keyboard_back_main_menu,
-        )
-        await callback.answer()
+# @inlain_price_router.callback_query(F.data == "price_record_bott")
+# async def handle_record_bott(callback: CallbackQuery):
+#     if callback.message:
+#         photo = FSInputFile("images/start_image_2.webp")
+#         await callback.message.answer_photo(
+#             photo, text.popular_types_text, reply_markup=reply.submenu_markup
+#         )
+#         await callback.message.answer(
+#             "⏮️ Нажмите если нужно вернуться назад к списку ботов",
+#             reply_markup=inline.inline_keyboard_back_main_menu,
+#         )
+#         await callback.answer()
 
 
 @inlain_price_router.callback_query(F.data == "price_hr_bott")
@@ -222,52 +222,52 @@ async def cases_webinar_link(callback: CallbackQuery):
     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data == "cases_shop")
-async def cases_shop_link(callback: CallbackQuery):
-    if callback.message is None:
-        await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
-        return
+# @inlain_price_router.callback_query(F.data == "cases_shop")
+# async def cases_shop_link(callback: CallbackQuery):
+#     if callback.message is None:
+#         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
+#         return
 
-    group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-    message_text = f"{text.shopbot_text_double}{text.cases_text_2}"
+#     group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
+#     message_text = f"{text.shopbot_text_double}{text.cases_text_2}"
 
-    link_button = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
-        ] + inline.back_platform.inline_keyboard
-    )
+#     link_button = InlineKeyboardMarkup(
+#         inline_keyboard=[
+#             [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
+#         ] + inline.back_platform.inline_keyboard
+#     )
 
-    await callback.message.answer(
-        message_text,
-        parse_mode="Markdown",
-        disable_web_page_preview=True,
-        reply_markup=link_button,
-    )
-    await callback.answer()
+#     await callback.message.answer(
+#         message_text,
+#         parse_mode="Markdown",
+#         disable_web_page_preview=True,
+#         reply_markup=link_button,
+#     )
+#     await callback.answer()
 
 
-@inlain_price_router.callback_query(F.data == "cases_record_bott")
-async def cases_record_bott_link(callback: CallbackQuery):
-    if callback.message is None:
-        await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
-        return
+# @inlain_price_router.callback_query(F.data == "cases_record_bott")
+# async def cases_record_bott_link(callback: CallbackQuery):
+#     if callback.message is None:
+#         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
+#         return
 
-    group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-    message_text = f"{text.popular_types_text_double}{text.cases_text_2}"
+#     group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
+#     message_text = f"{text.popular_types_text_double}{text.cases_text_2}"
 
-    link_button = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
-        ] + inline.back_platform.inline_keyboard
-    )
+#     link_button = InlineKeyboardMarkup(
+#         inline_keyboard=[
+#             [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
+#         ] + inline.back_platform.inline_keyboard
+#     )
 
-    await callback.message.answer(
-        message_text,
-        parse_mode="Markdown",
-        disable_web_page_preview=True,
-        reply_markup=link_button,
-    )
-    await callback.answer()
+#     await callback.message.answer(
+#         message_text,
+#         parse_mode="Markdown",
+#         disable_web_page_preview=True,
+#         reply_markup=link_button,
+#     )
+#     await callback.answer()
 
 
 @inlain_price_router.callback_query(F.data == "cases_hr_bott")

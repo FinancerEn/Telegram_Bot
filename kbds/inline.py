@@ -71,16 +71,16 @@ platform_services_kb = InlineKeyboardMarkup(
                 text="Автовебинарный бот", callback_data="service_webinar"
             )
         ],
-        [
-            InlineKeyboardButton(
-                text="🛒 Чат-бот Магазин", callback_data="service_shop_bott"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📝 Бот-запись на услуги", callback_data="service_record_bott"
-            )
-        ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="🛒 Чат-бот Магазин", callback_data="service_shop_bott"
+        #     )
+        # ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="📝 Бот-запись на услуги", callback_data="service_record_bott"
+        #     )
+        # ],
         [
             InlineKeyboardButton(
                 text="HR-бот", callback_data="service_hr_bott"
@@ -112,16 +112,16 @@ platform_services_price_kb = InlineKeyboardMarkup(
                 text="🎥 Автовебинарный Бот", callback_data="price_webinar"
             )
         ],
-        [
-            InlineKeyboardButton(
-                text="🛒 Чат-бот Магазин", callback_data="price_shop"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📝 Бот-запись на услуги", callback_data="price_record_bott"
-            )
-        ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="🛒 Чат-бот Магазин", callback_data="price_shop"
+        #     )
+        # ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="📝 Бот-запись на услуги", callback_data="price_record_bott"
+        #     )
+        # ],
         [
             InlineKeyboardButton(
                 text="🕓 HR-бот (поиск сотрудников)", callback_data="price_hr_bott"
@@ -157,16 +157,16 @@ platform_cases_kb = InlineKeyboardMarkup(
                 text="🎥 Автовебинарный Бот", callback_data="cases_webinar"
             )
         ],
-        [
-            InlineKeyboardButton(
-                text="🛒 Чат-бот Магазин", callback_data="cases_shop"
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="📝 Бот-запись на услуги", callback_data="cases_record_bott"
-            )
-        ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="🛒 Чат-бот Магазин", callback_data="cases_shop"
+        #     )
+        # ],
+        # [
+        #     InlineKeyboardButton(
+        #         text="📝 Бот-запись на услуги", callback_data="cases_record_bott"
+        #     )
+        # ],
         [
             InlineKeyboardButton(
                 text="🕓 HR-бот (поиск сотрудников)", callback_data="cases_hr_bott"

@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from database.models import Base
 
+from dotenv import load_dotenv
+load_dotenv()
 
 # # Получаем URL БД sqlite из .env
 # db_url = os.getenv("DB_URL_SQLITE")
@@ -14,6 +16,7 @@ db_url = os.getenv("DB_URL")
 # print(f"DB_URL загружен: {db_url}")
 
 # Проверяем, что URL не пустой
+print(f"DB_URL загружен: {db_url}")
 if not db_url:
     raise ValueError("Переменная окружения DB_URL не задана!")
 

@@ -2,6 +2,7 @@
 from aiogram import Router, F
 from filters.chat_types import ChatTypeFilter
 from aiogram.types import FSInputFile, CallbackQuery
+from aiogram.types import Message
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Кастомные импорты
@@ -28,16 +29,29 @@ async def handle_price_vizitka(callback: CallbackQuery):
 
 @inlain_price_router.callback_query(F.data == "price_quiz")
 async def handle_price_quiz(callback: CallbackQuery):
-    if callback.message:
-        photo = FSInputFile("images/start_image_2.webp")
-        await callback.message.answer_photo(
-            photo, text.questionnaire_text, reply_markup=reply.submenu_markup
-        )
-        await callback.message.answer(
-            "⏮️ Нажмите если нужно вернуться назад к списку ботов",
-            reply_markup=inline.inline_keyboard_back_main_menu,
-        )
-        await callback.answer()
+    if not isinstance(callback.message, Message):  # Проверяем тип
+        await callback.answer("Ошибка: сообщение недоступно.", show_alert=True)
+        return
+
+    group_link = "https://t.me/Manager_Quiz_bot"
+    message_text = text.sample_url_text
+
+    # Клавиатура с кнопкой-ссылкой и кнопкой "Назад"
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🔗 Открыть бота", url=group_link)],
+        ] + inline.inline_keyboard_back_main_menu.inline_keyboard  # Добавляем "Назад"
+    )
+
+    # Изменяем текст в существующем сообщении
+    await callback.message.edit_text(
+        message_text,
+        parse_mode='Markdown',
+        disable_web_page_preview=True,
+        reply_markup=keyboard,
+    )
+
+    await callback.answer()  # Закрываем callback
 
 
 @inlain_price_router.callback_query(F.data == "price_catalog")

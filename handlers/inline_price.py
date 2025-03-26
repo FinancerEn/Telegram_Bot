@@ -28,30 +28,17 @@ async def handle_price_vizitka(callback: CallbackQuery):
 
 
 @inlain_price_router.callback_query(F.data == "price_quiz")
-async def handle_price_quiz(callback: CallbackQuery):
-    if not isinstance(callback.message, Message):  # Проверяем тип
-        await callback.answer("Ошибка: сообщение недоступно.", show_alert=True)
-        return
-
-    group_link = "https://t.me/Manager_Quiz_bot"
-    message_text = text.sample_url_text
-
-    # Клавиатура с кнопкой-ссылкой и кнопкой "Назад"
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="🔗 Открыть бота", url=group_link)],
-        ] + inline.inline_keyboard_back_main_menu.inline_keyboard  # Добавляем "Назад"
-    )
-
-    # Изменяем текст в существующем сообщении
-    await callback.message.edit_text(
-        message_text,
-        parse_mode='Markdown',
-        disable_web_page_preview=True,
-        reply_markup=keyboard,
-    )
-
-    await callback.answer()  # Закрываем callback
+async def cases_quiz_link(callback: CallbackQuery):
+    if callback.message:
+        photo = FSInputFile("images/start_image_2.webp")
+        await callback.message.answer_photo(
+            photo, text.questionnaire_text, reply_markup=reply.submenu_markup
+        )
+        await callback.message.answer(
+            "⏮️ Нажмите если нужно вернуться назад к списку ботов",
+            reply_markup=inline.inline_keyboard_back_main_menu,
+        )
+        await callback.answer()
 
 
 @inlain_price_router.callback_query(F.data == "price_catalog")
@@ -166,27 +153,30 @@ async def cases_vizitka_link(callback: CallbackQuery):
 
 
 @inlain_price_router.callback_query(F.data == "cases_quiz")
-async def cases_quiz_link(callback: CallbackQuery):
-    if callback.message is None:
-        await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
+async def handle_price_quiz(callback: CallbackQuery):
+    if not isinstance(callback.message, Message):  # Проверяем тип
+        await callback.answer("Ошибка: сообщение недоступно.", show_alert=True)
         return
 
-    group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-    message_text = f"{text.questionnaire_text_double}{text.cases_text_2}"
+    group_link = "https://t.me/Manager_Quiz_bot"
+    message_text = text.sample_url_text
 
-    link_button = InlineKeyboardMarkup(
+    # Клавиатура с кнопкой-ссылкой и кнопкой "Назад"
+    keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
-        ] + inline.back_platform.inline_keyboard
+            [InlineKeyboardButton(text="🔗 Открыть бота", url=group_link)],
+        ] + inline.back_platform.inline_keyboard  # Добавляем "Назад"
     )
 
-    await callback.message.answer(
+    # Изменяем текст в существующем сообщении
+    await callback.message.edit_text(
         message_text,
-        parse_mode="Markdown",
+        parse_mode='Markdown',
         disable_web_page_preview=True,
-        reply_markup=link_button,
+        reply_markup=keyboard,
     )
-    await callback.answer()
+
+    await callback.answer()  # Закрываем callback
 
 
 @inlain_price_router.callback_query(F.data == "cases_catalog")

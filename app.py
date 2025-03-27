@@ -31,6 +31,15 @@ TOKEN = os.getenv("TOKEN")
 if not TOKEN:
     raise ValueError("Переменная окружения 'TOKEN' не задана.")
 
+db_url = os.getenv("DB_URL")
+
+# print(f"DB_URL загружен: {db_url}")
+
+# Проверяем, что URL не пустой
+print(f"DB_URL загружен: {db_url}")
+if not db_url:
+    raise ValueError("Переменная окружения DB_URL не задана!")
+
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 

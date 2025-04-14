@@ -1,13 +1,14 @@
 # Импорты Питона.
 import asyncio
 import os
+from typing import Optional
 
 # Импорты фреймворка.
 from aiogram import Bot, Dispatcher
-from aiogram.types import BotCommandScopeAllPrivateChats
 from dotenv import load_dotenv
 
 # Импорты Middleware для базы данных..
+from aiogram.types import BotCommandScopeAllPrivateChats
 from middlewares.db import DataBaseSession
 from database.engine import create_db, drop_db, session_maker
 
@@ -33,10 +34,6 @@ if not TOKEN:
 
 db_url = os.getenv("DB_URL")
 
-# print(f"DB_URL загружен: {db_url}")
-
-# Проверяем, что URL не пустой
-print(f"DB_URL загружен: {db_url}")
 if not db_url:
     raise ValueError("Переменная окружения DB_URL не задана!")
 
@@ -54,16 +51,14 @@ dp.include_router(bot_cmds_router)
 dp.include_router(inlain_price_router)
 
 
-# Функции относящиеся к БД, (движку моделей из engine.py).
-# Если run_param=True, база удалится и создастся заново.
-# Иначе просто создаётся база, если её ещё нет.
 async def on_startup(bot):
-
-    run_param = False
-    if run_param:
-        await drop_db()
+    # Раскоментировать если нужно обновить модели,
+    # только закоментировать после 1 загрузки сервера.
+    # Удаляет содержимое бд
+    # await drop_db()
 
     await create_db()
+    print("Бот запущен!")
 
 
 # Просто выводит сообщение при остановке бота.
@@ -73,12 +68,8 @@ async def on_shutdown(bot):
 
 async def main():
     # Используем функции: on_startup, on_shutdown относящиеся к БД, (движку из engine.py).
-    dp.startup.register(
-        on_startup
-    )  # Выполнить on_startup при запуске и создаётся база.
-    dp.shutdown.register(
-        on_shutdown
-    )  # Выполнить on_shutdown при завершении работы бота.
+    dp.startup.register(on_startup)  # Выполнить on_startup при запуске и создаётся база.
+    dp.shutdown.register(on_shutdown)  # Выполнить on_shutdown при завершении работы бота.
 
     # Реализуем наш Middleware слой.
     # Теперь в каждый хендлер нашего проекта будет пробрасываться сессия.

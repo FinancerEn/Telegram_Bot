@@ -223,7 +223,7 @@ async def confirm_order(
             f"📞 Контакты: {data.get('contacts')}\n"
             f"🔗 ID пользователя: {callback.from_user.id}"
         )
-        print(f"GROUP_ID_ENV = {GROUP_ID_ENV}")
+        # print(f"GROUP_ID_ENV = {GROUP_ID_ENV}")
         # Отправляем заказ в группу
         if GROUP_ID_ENV and callback.bot:
             await callback.bot.send_message(

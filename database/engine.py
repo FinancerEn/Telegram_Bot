@@ -21,7 +21,7 @@ if not db_url:
     raise ValueError("Переменная окружения DB_URL не задана!")
 
 # Создаем движок. Из .env импортируем "DB_URL" url БД и echo=True что бы все SQL запросы выводились в терминал.
-engine = create_async_engine(db_url, echo=True)
+engine = create_async_engine(db_url, echo=False)
 
 # Создаем фабрику сессий. От которой мы берём сессии что бы делать запросы в БД.
 # AsyncSession ассинхронный класс создания сессий.

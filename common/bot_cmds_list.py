@@ -40,12 +40,14 @@ async def payment_command(message: types.Message):
 
 @bot_cmds_router.message(Command("reviews"))
 async def reviews_command(message: types.Message):
-    photo = FSInputFile("images/review1.webp")
-    photo_2 = FSInputFile("images/review1.webp")
+    photo = FSInputFile("images/feedback_1.webp")
+    photo_2 = FSInputFile("images/feedback_2.webp")
+    photo_3 = FSInputFile("images/feedback_3.webp")
     await message.answer_photo(photo)
     await message.answer_photo(photo_2)
+    await message.answer_photo(photo_3)
 
-    texts = Bold("Отзывы наших клиентов 😊")
+    texts = Bold("Отзывы 😊")
     await message.answer(
         texts.as_html(), parse_mode="HTML", reply_markup=reply.submenu_markup
     )

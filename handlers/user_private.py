@@ -58,10 +58,12 @@ async def reviews_reply(message: Message):
         texts.as_html(), parse_mode="HTML", reply_markup=reply.back_markup
     )
 
-    photo = FSInputFile("images/review1.webp")
-    photo_2 = FSInputFile("images/review1.webp")
+    photo = FSInputFile("images/feedback_1.webp")
+    photo_2 = FSInputFile("images/feedback_2.webp")
+    photo_3 = FSInputFile("images/feedback_3.webp")
     await message.answer_photo(photo)
     await message.answer_photo(photo_2)
+    await message.answer_photo(photo_3)
 
 
 @user_private_router.message(F.text.casefold() == "оплата")

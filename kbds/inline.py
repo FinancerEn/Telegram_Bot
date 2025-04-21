@@ -157,16 +157,6 @@ platform_cases_kb = InlineKeyboardMarkup(
                 text="🎥 Автовебинарный Бот", callback_data="cases_webinar"
             )
         ],
-        # [
-        #     InlineKeyboardButton(
-        #         text="🛒 Чат-бот Магазин", callback_data="cases_shop"
-        #     )
-        # ],
-        # [
-        #     InlineKeyboardButton(
-        #         text="📝 Бот-запись на услуги", callback_data="cases_record_bott"
-        #     )
-        # ],
         [
             InlineKeyboardButton(
                 text="🕓 HR-бот (поиск сотрудников)", callback_data="cases_hr_bott"
@@ -174,7 +164,7 @@ platform_cases_kb = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(
-                text="🔧 Другие услуги:", callback_data="cases_other")
+                text="🤖 Бот с искусственным интелектом:", callback_data="cases_other")
         ],
         [
             InlineKeyboardButton(

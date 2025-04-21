@@ -226,54 +226,6 @@ async def cases_webinar_link(callback: CallbackQuery):
     await callback.answer()
 
 
-# @inlain_price_router.callback_query(F.data == "cases_shop")
-# async def cases_shop_link(callback: CallbackQuery):
-#     if callback.message is None:
-#         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
-#         return
-
-#     group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-#     message_text = f"{text.shopbot_text_double}{text.cases_text_2}"
-
-#     link_button = InlineKeyboardMarkup(
-#         inline_keyboard=[
-#             [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
-#         ] + inline.back_platform.inline_keyboard
-#     )
-
-#     await callback.message.answer(
-#         message_text,
-#         parse_mode="Markdown",
-#         disable_web_page_preview=True,
-#         reply_markup=link_button,
-#     )
-#     await callback.answer()
-
-
-# @inlain_price_router.callback_query(F.data == "cases_record_bott")
-# async def cases_record_bott_link(callback: CallbackQuery):
-#     if callback.message is None:
-#         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
-#         return
-
-#     group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
-#     message_text = f"{text.popular_types_text_double}{text.cases_text_2}"
-
-#     link_button = InlineKeyboardMarkup(
-#         inline_keyboard=[
-#             [InlineKeyboardButton(text="🔗 Перейти в бота", url=group_link)],
-#         ] + inline.back_platform.inline_keyboard
-#     )
-
-#     await callback.message.answer(
-#         message_text,
-#         parse_mode="Markdown",
-#         disable_web_page_preview=True,
-#         reply_markup=link_button,
-#     )
-#     await callback.answer()
-
-
 @inlain_price_router.callback_query(F.data == "cases_hr_bott")
 async def cases_hr_bott_link(callback: CallbackQuery):
     if callback.message is None:
@@ -304,7 +256,7 @@ async def cases_other_link(callback: CallbackQuery):
         await callback.answer("Ошибка: Не удалось обработать запрос.", show_alert=True)
         return
 
-    group_link = "https://t.me/+DDiXtpAlb7AxZmIy"
+    group_link = "https://t.me/New_Shop_Manager_bot"
     message_text = f"{text.other_text}{text.cases_text_2}"
 
     link_button = InlineKeyboardMarkup(
